@@ -22,6 +22,16 @@
             </div>
         <?php endif; ?>
 
+        <!-- Mensaje de bienvenida con descuento para usuarios nuevos (solo mostrar si es primer pedido) -->
+        <?php if (isset($_SESSION['user_email']) && isset($isFirstOrder) && $isFirstOrder): ?>
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-gift"></i>
+            <strong>¡Bienvenido a Coffee Shop!</strong> Tienes un descuento de bienvenida del 15% en tu primer pedido. 
+            Usa el código <strong>WELCOME15</strong> para aplicarlo.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php endif; ?>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
@@ -30,11 +40,17 @@
                         <form method="POST" action="/cart/process-order">
                             <div class="mb-3">
                                 <label class="form-label">Nombre completo *</label>
-                                <input type="text" name="customer_name" class="form-control" required>
+                                <input type="text" name="customer_name" class="form-control" value="<?php echo isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : ''; ?>" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Email *</label>
-                                <input type="email" name="customer_email" class="form-control" required>
+                                <?php if (isset($_SESSION['user_email'])): ?>
+                                    <input type="email" name="customer_email" class="form-control" value="<?php echo htmlspecialchars($_SESSION['user_email']); ?>" readonly>
+                                    <small class="form-text text-muted">Email de tu cuenta</small>
+                                <?php else: ?>
+                                        <input type="email" name="customer_email" id="customerEmailInput" class="form-control" required>
+                                        <small id="emailEligibility" class="form-text text-muted" style="display:none;"></small>
+                                <?php endif; ?>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Teléfono *</label>
@@ -54,6 +70,20 @@
                                 </div>
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label">Método de Pago *</label>
+                                <div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="paymentCard" value="card" checked>
+                                        <label class="form-check-label" for="paymentCard"><i class="bi bi-credit-card"></i> Tarjeta al Recibir</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="paymentCash" value="cash">
+                                        <label class="form-check-label" for="paymentCash"><i class="bi bi-cash-coin"></i> Efectivo</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mb-3" id="delivery-address-group">
                                 <label class="form-label">Dirección de entrega *</label>
                                 <textarea name="delivery_address" id="delivery_address" class="form-control" rows="3" required></textarea>
@@ -63,12 +93,15 @@
                                 <label class="form-label">Dirección de retiro</label>
                                 <div class="alert alert-secondary mb-0">
                                     <strong>Local Cafetería Aroma</strong><br>
-                                    Calle Falsa 123, Ciudad Ejemplo
+                                    Calle 123, Ciudad Ejemplo
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success btn-lg w-100">
                                 <i class="bi bi-check-circle"></i> Confirmar Pedido
                             </button>
+                            <!-- Hidden fields para enviar descuento al servidor -->
+                            <input type="hidden" id="discountCodeHidden" name="discount_code" value="">
+                            <input type="hidden" id="discountPercentageHidden" name="discount_percentage" value="0">
                         </form>
                         </div>
                     </div>
@@ -82,16 +115,41 @@
                     var pickupInfo = document.getElementById('pickup-address-info');
                     var deliveryField = document.getElementById('delivery_address');
                     var DELIVERY_FEE = 3000;
+                    var discountPercentage = 0;
 
                     function formatCurrencyCLP(value) {
                         return '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
                     }
 
-                    function updateDeliveryUI() {
+                    function updateTotal() {
                         var cartTotalDisplay = document.getElementById('cartTotalDisplay');
+                        var productSubtotal = parseFloat(cartTotalDisplay ? cartTotalDisplay.getAttribute('data-subtotal') : 0) || 0;
+                        var deliveryFee = (deliveryRadio && deliveryRadio.checked) ? DELIVERY_FEE : 0;
+                        
+                        // Descuento se aplica al subtotal (solo productos)
+                        var discountAmount = (productSubtotal * discountPercentage) / 100;
+                        // Total = Subtotal + Envío - Descuento
+                        var total = productSubtotal + deliveryFee - discountAmount;
+                        
+                        cartTotalDisplay.textContent = formatCurrencyCLP(total);
+                        
+                        // Mostrar/ocultar descuento
+                        var discountRow = document.getElementById('discountRow');
+                        var discountAmountDisplay = document.getElementById('discountAmount');
+                        if (discountPercentage > 0) {
+                            discountRow.style.display = '';
+                            discountAmountDisplay.textContent = '-' + formatCurrencyCLP(discountAmount);
+                        } else {
+                            discountRow.style.display = 'none';
+                        }
+                    }
+
+                    function updateDeliveryUI() {
+                        var deliveryGroup = document.getElementById('delivery-address-group');
+                        var pickupInfo = document.getElementById('pickup-address-info');
+                        var deliveryField = document.getElementById('delivery_address');
                         var deliveryFeeRow = document.getElementById('deliveryFeeRow');
                         var deliveryFeeAmount = document.getElementById('deliveryFeeAmount');
-                        var baseTotal = parseFloat(cartTotalDisplay ? cartTotalDisplay.getAttribute('data-base-total') : 0) || 0;
 
                         if (pickupRadio && pickupRadio.checked) {
                             if (deliveryGroup) deliveryGroup.style.display = 'none';
@@ -102,7 +160,6 @@
                                 deliveryFeeRow.style.display = 'none';
                             }
                             if (deliveryFeeAmount) deliveryFeeAmount.textContent = formatCurrencyCLP(0);
-                            if (cartTotalDisplay) cartTotalDisplay.textContent = formatCurrencyCLP(baseTotal);
                         } else {
                             if (deliveryGroup) deliveryGroup.style.display = '';
                             if (pickupInfo) pickupInfo.style.display = 'none';
@@ -112,14 +169,207 @@
                                 deliveryFeeRow.style.display = '';
                             }
                             if (deliveryFeeAmount) deliveryFeeAmount.textContent = formatCurrencyCLP(DELIVERY_FEE);
-                            if (cartTotalDisplay) cartTotalDisplay.textContent = formatCurrencyCLP(baseTotal + DELIVERY_FEE);
                         }
+                        
+                        updateTotal();
                     }
 
                     if (deliveryRadio) deliveryRadio.addEventListener('change', updateDeliveryUI);
                     if (pickupRadio) pickupRadio.addEventListener('change', updateDeliveryUI);
+                    // Exponer métodos para que funciones externas (applyDiscount/removeDiscount) puedan
+                    // actualizar el estado del descuento y recalcular totales.
+                    window.__checkout = window.__checkout || {};
+                    window.__checkout.updateTotal = updateTotal;
+                    window.__checkout.setDiscountPercentage = function(p) { discountPercentage = p; updateTotal(); };
+
                     updateDeliveryUI();
                 })();
+
+                // Variable desde servidor que indica si el usuario es elegible al descuento de primer pedido
+                var IS_FIRST_ORDER = <?php echo (isset($isFirstOrder) && $isFirstOrder) ? 'true' : 'false'; ?>;
+
+                (function(){
+                    var emailInput = document.getElementById('customerEmailInput');
+                    var eligibilityEl = document.getElementById('emailEligibility');
+                    var applyBtn = document.getElementById('applyDiscountBtn');
+                    var debounceTimer = null;
+
+                    function setEligibility(eligible) {
+                        IS_FIRST_ORDER = !!eligible;
+                        if (!eligibilityEl) return;
+                        if (eligible) {
+                            eligibilityEl.style.display = '';
+                            eligibilityEl.className = 'form-text text-success';
+                            eligibilityEl.textContent = 'Este email es elegible para WELCOME15 (primer pedido).';
+                            if (applyBtn) applyBtn.disabled = false;
+                        } else {
+                            eligibilityEl.style.display = '';
+                            eligibilityEl.className = 'form-text text-danger';
+                            eligibilityEl.textContent = 'Este email ya tiene pedidos. WELCOME15 no será aplicable.';
+                        }
+                    }
+
+                    function checkEmailAjax(email) {
+                        if (!email || email.indexOf('@') === -1) {
+                            if (eligibilityEl) { eligibilityEl.style.display = 'none'; }
+                            return;
+                        }
+
+                        fetch('/cart/check-email?email=' + encodeURIComponent(email), { credentials: 'same-origin' })
+                            .then(function(res){ return res.json(); })
+                            .then(function(data){
+                                if (data && data.ok) {
+                                    setEligibility(data.eligible);
+                                }
+                            }).catch(function(){ /* no-op */ });
+                    }
+
+                    if (emailInput) {
+                        emailInput.addEventListener('input', function(e){
+                            var val = e.target.value.trim();
+                            clearTimeout(debounceTimer);
+                            debounceTimer = setTimeout(function(){ checkEmailAjax(val); }, 500);
+                        });
+
+                        // Ejecutar al cargar si hay valor
+                        if (emailInput.value) checkEmailAjax(emailInput.value.trim());
+                    }
+                })();
+
+                function applyDiscount() {
+                    var discountCodeInput = document.getElementById('discountCode');
+                    var code = discountCodeInput.value.trim().toUpperCase();
+                    
+                    // Validar códigos de descuento
+                    var discountPercentage = 0;
+                    var isValid = false;
+                    
+                    if (code === 'WELCOME15') {
+                        // Si el usuario no es elegible, mostrar aviso y no aplicar
+                        if (typeof IS_FIRST_ORDER !== 'undefined' && !IS_FIRST_ORDER) {
+                            var alertHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
+                                '<i class="bi bi-exclamation-triangle"></i> El código WELCOME15 solo aplica en tu primer pedido.' +
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                                '</div>';
+                            discountCodeInput.parentElement.parentElement.insertAdjacentHTML('beforebegin', alertHTML);
+                            discountCodeInput.value = '';
+                            return;
+                        }
+
+                        discountPercentage = 15;
+                        isValid = true;
+                    } else if (code !== '') {
+                        // Mostrar alerta de error
+                        var alertHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
+                            '<i class="bi bi-exclamation-triangle"></i> Código de descuento inválido' +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                            '</div>';
+                        discountCodeInput.parentElement.parentElement.insertAdjacentHTML('beforebegin', alertHTML);
+                        discountCodeInput.value = '';
+                        return;
+                    }
+                    
+                    // Actualizar variable global en el scope anterior
+                    var cartTotalDisplay = document.getElementById('cartTotalDisplay');
+                    var productSubtotal = parseFloat(cartTotalDisplay ? cartTotalDisplay.getAttribute('data-subtotal') : 0) || 0;
+                    var deliveryRadio = document.getElementById('deliveryTypeDelivery');
+                    var pickupRadio = document.getElementById('deliveryTypePickup');
+                    var DELIVERY_FEE = 3000;
+                    
+                    var deliveryFee = (deliveryRadio && deliveryRadio.checked) ? DELIVERY_FEE : 0;
+                    // Descuento se aplica al subtotal (solo productos)
+                    var discountAmount = (productSubtotal * discountPercentage) / 100;
+                    // Total = Subtotal + Envío - Descuento
+                    var total = productSubtotal + deliveryFee - discountAmount;
+                    
+                    // Mostrar descuento
+                    var discountRow = document.getElementById('discountRow');
+                    var discountAmountDisplay = document.getElementById('discountAmount');
+                    
+                    if (discountPercentage > 0) {
+                        discountRow.style.display = '';
+                        discountAmountDisplay.textContent = '-$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(discountAmount);
+                        cartTotalDisplay.textContent = '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+                        
+                        // Guardar el descuento en los campos ocultos del formulario para que el servidor lo reciba
+                        var hiddenCode = document.getElementById('discountCodeHidden');
+                        var hiddenPerc = document.getElementById('discountPercentageHidden');
+                        if (hiddenCode) hiddenCode.value = code;
+                        if (hiddenPerc) hiddenPerc.value = discountPercentage;
+
+                        // Actualizar también la variable usada por updateTotal() dentro del IIFE
+                        if (window.__checkout && typeof window.__checkout.setDiscountPercentage === 'function') {
+                            window.__checkout.setDiscountPercentage(discountPercentage);
+                        }
+                        
+                        // Mostrar alerta de éxito
+                        var alertHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                            '<i class="bi bi-check-circle"></i> <strong>¡Descuento aplicado!</strong> Ahorraste $' +
+                            new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(discountAmount) +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                            '</div>';
+                        discountCodeInput.parentElement.parentElement.insertAdjacentHTML('beforebegin', alertHTML);
+                        
+                        // Desabilitar el campo después de aplicar
+                        discountCodeInput.disabled = true;
+                        document.getElementById('applyDiscountBtn').disabled = true;
+                    } else {
+                        discountRow.style.display = 'none';
+                        // Limpiar campos ocultos si no hay descuento
+                        var hiddenCode = document.getElementById('discountCodeHidden');
+                        var hiddenPerc = document.getElementById('discountPercentageHidden');
+                        if (hiddenCode) hiddenCode.value = '';
+                        if (hiddenPerc) hiddenPerc.value = 0;
+
+                        // Asegurar que el IIFE también conoce que el descuento quedó en 0
+                        if (window.__checkout && typeof window.__checkout.setDiscountPercentage === 'function') {
+                            window.__checkout.setDiscountPercentage(0);
+                        }
+                    }
+                }
+
+                function removeDiscount() {
+                    // Limpiar estado de descuento en UI y en campos ocultos
+                    var discountRow = document.getElementById('discountRow');
+                    var discountAmountDisplay = document.getElementById('discountAmount');
+                    var cartTotalDisplay = document.getElementById('cartTotalDisplay');
+                    var discountCodeInput = document.getElementById('discountCode');
+                    var applyBtn = document.getElementById('applyDiscountBtn');
+
+                    // Limpiar valores visibles
+                    if (discountAmountDisplay) discountAmountDisplay.textContent = '-$0,00';
+                    if (discountRow) discountRow.style.display = 'none';
+
+                    // Limpiar campos ocultos
+                    var hiddenCode = document.getElementById('discountCodeHidden');
+                    var hiddenPerc = document.getElementById('discountPercentageHidden');
+                    if (hiddenCode) hiddenCode.value = '';
+                    if (hiddenPerc) hiddenPerc.value = 0;
+
+                    // Rehabilitar input y botón
+                    if (discountCodeInput) { discountCodeInput.disabled = false; discountCodeInput.value = ''; }
+                    if (applyBtn) applyBtn.disabled = false;
+
+                    // Eliminar alertas de éxito relacionadas al descuento
+                    var alerts = document.querySelectorAll('.alert.alert-success.alert-dismissible');
+                    alerts.forEach(function(a){
+                        if (a.textContent && a.textContent.indexOf('¡Descuento aplicado!') !== -1) {
+                            a.remove();
+                        }
+                    });
+
+                    // Actualizar la variable interna y recalcular totales
+                    if (window.__checkout && typeof window.__checkout.setDiscountPercentage === 'function') {
+                        window.__checkout.setDiscountPercentage(0);
+                    } else {
+                        // fallback: recalcular manualmente
+                        var productSubtotal = parseFloat(cartTotalDisplay ? cartTotalDisplay.getAttribute('data-subtotal') : 0) || 0;
+                        var deliveryRadio = document.getElementById('deliveryTypeDelivery');
+                        var deliveryFee = (deliveryRadio && deliveryRadio.checked) ? 3000 : 0;
+                        var total = productSubtotal + deliveryFee;
+                        if (cartTotalDisplay) cartTotalDisplay.textContent = '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+                    }
+                }
                 </script>
             
             <!-- Resumen del Pedido -->
@@ -140,19 +390,53 @@
                         <?php endforeach; ?>
                         
                         <hr>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="bi bi-tag"></i> Código de Descuento (Opcional)</label>
+                            <div class="input-group">
+                                <input type="text" id="discountCode" class="form-control" placeholder="Ej: WELCOME15">
+                                <button class="btn btn-success" type="button" id="applyDiscountBtn" onclick="applyDiscount()">
+                                    <i class="bi bi-check-circle"></i> Aplicar
+                                </button>
+                            </div>
+                            <?php if (!isset($_SESSION['user_email']) || (isset($isFirstOrder) && $isFirstOrder)): ?>
+                            <small class="form-text text-muted d-block mt-2">
+                                <i class="bi bi-info-circle"></i> <strong>WELCOME15:</strong> 15% de descuento en tu primer pedido
+                            </small>
+                            <?php endif; ?>
+                            
+                        </div>
                         <?php
-                            $baseTotal = floatval($cartTotal ?? 0);
+                            $productTotal = floatval($cartTotal ?? 0);
                             $deliveryFee = 3000;
                             $initiallyDelivery = true;
-                            $initialTotal = $initiallyDelivery ? ($baseTotal + $deliveryFee) : $baseTotal;
+                            // Subtotal = solo productos
+                            $subtotal = $productTotal;
+                            // Total inicial = subtotal + envío (sin descuento)
+                            $deliveryToShow = $initiallyDelivery ? $deliveryFee : 0;
+                            $initialTotal = $subtotal + $deliveryToShow;
                         ?>
+
+                        <div id="discountRow" class="d-flex justify-content-between mb-2 align-items-center" style="display:none;">
+                            <div>
+                                <span>Descuento:</span>
+                                <span id="discountAmount" class="text-success">-$0,00</span>
+                            </div>
+                            <div>
+                                <button type="button" id="removeDiscountBtn" class="btn btn-sm btn-outline-secondary" onclick="removeDiscount()">Quitar</button>
+                            </div>
+                        </div>
                         <div id="deliveryFeeRow" class="d-flex justify-content-between mb-2 <?php echo $initiallyDelivery ? '' : 'd-none'; ?>">
                             <span>Envío:</span>
                             <span id="deliveryFeeAmount" class="text-muted"><?php echo '$' . number_format($initiallyDelivery ? $deliveryFee : 0, 2); ?></span>
                         </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>$<?php echo number_format($subtotal, 2); ?></span>
+                        </div>
+                        <hr class="my-2">
                         <div class="d-flex justify-content-between mb-3">
                             <strong>Total:</strong>
-                            <strong id="cartTotalDisplay" class="h5 text-success" data-base-total="<?php echo $baseTotal; ?>"><?php echo '$' . number_format($initialTotal, 2); ?></strong>
+                            <strong id="cartTotalDisplay" class="h5 text-success" data-subtotal="<?php echo $subtotal; ?>"><?php echo '$' . number_format($initialTotal, 2); ?></strong>
                         </div>
                         
                         <?php if (!isset($_SESSION['user_id'])): ?>

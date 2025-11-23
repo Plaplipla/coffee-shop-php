@@ -34,7 +34,7 @@ $publicRoutes = [
     '', 'home', 'login', 'auth/login', 'register', 'auth/register',
     'cart', 'cart/add', 'cart/remove', 'cart/update-quantity', 'cart/clear',
     'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'about',
-    'employee/orders', 'admin/dashboard', 'admin/reports', 'admin/export', 'track-order'
+    'employee/orders', 'admin/dashboard', 'admin/reports', 'admin/export', 'track-order', 'order-history'
 ];
 
 // Verificar sesión solo para rutas protegidas
@@ -64,6 +64,11 @@ switch ($uri) {
     case 'about':
         $controller = new HomeController();
         $controller->about();
+        break;
+    
+    case 'order-history':
+        $controller = new HomeController();
+        $controller->orders();
         break;
     
     case 'login':

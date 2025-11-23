@@ -29,8 +29,19 @@
                 <input class="form-control" name="name" value="<?php echo htmlspecialchars($name); ?>" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Categoría</label>
-                <input class="form-control" name="category" value="<?php echo htmlspecialchars($category); ?>">
+                <label class="form-label">Categoría <span class="text-danger">*</span></label>
+                <select class="form-control" name="category" required>
+                    <option value="">-- Selecciona una categoría --</option>
+                    <?php if (isset($categories)): ?>
+                        <?php foreach ($categories as $key => $label): ?>
+                            <option value="<?php echo htmlspecialchars($key); ?>" 
+                                <?php echo ($category === $key) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($label); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                <small class="form-text text-muted">Selecciona una categoría de la lista de categorías disponibles</small>
             </div>
             <div class="mb-3">
                 <label class="form-label">Precio</label>

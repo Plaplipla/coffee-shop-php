@@ -76,7 +76,7 @@
         </div>
 
         <!-- Productos Más Vendidos -->
-        <div class="row mt-4">
+        <div class="row my-4">
             <div class="col-md-12">
                 <h3 class="section-title"><i class="bi bi-star"></i> Productos Más Vendidos</h3>
                 <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
@@ -95,19 +95,6 @@
                     <?php else: ?>
                         <p class="text-muted">No hay datos de productos disponibles</p>
                     <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <!-- Acciones Disponibles -->
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <div class="action-buttons">
-                    <h4>Acciones Disponibles</h4>
-                    <a href="/admin/reports" class="btn-reports"><i class="bi bi-file-earmark-bar-graph"></i> Ver Reportes Detallados</a>
-                    <a href="/admin/reports?period=week" class="btn-reports"><i class="bi bi-calendar-week"></i> Reportes Semanales</a>
-                    <a href="/admin/reports?period=month" class="btn-reports"><i class="bi bi-calendar-month"></i> Reportes Mensuales</a>
-                    <a href="/employee/orders" class="btn-reports"><i class="bi bi-lightning-fill"></i> Gestionar Pedidos</a>
                 </div>
             </div>
         </div>

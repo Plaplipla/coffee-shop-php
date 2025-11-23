@@ -1,3 +1,83 @@
+/* Filtros de categoría */
+.category-filters {
+    padding: 30px 20px;
+    margin-bottom: 40px;
+}
+
+.filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+    padding: 0;
+    width: auto;
+    height: auto;
+}
+
+.filter-btn:hover {
+    transform: translateY(-3px);
+}
+
+.filter-btn.active {
+    color: var(--coffee-dark);
+}
+
+.filter-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(212, 165, 116, 0.25);
+    border-radius: 50%;
+    font-size: 2.5rem;
+    color: var(--coffee-brown);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.filter-btn:hover .filter-icon {
+    background: rgba(212, 165, 116, 0.35);
+    transform: scale(1.05);
+}
+
+.filter-btn.active .filter-icon {
+    background: rgba(212, 165, 116, 0.4);
+}
+
+@media (max-width: 768px) {
+    .filter-container {
+        gap: 20px;
+    }
+    
+    .filter-btn {
+        font-size: 0.75rem;
+    }
+    
+    .filter-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+}
+
 .product-card-modern {
     position: relative;
     border: none;

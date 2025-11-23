@@ -9,7 +9,6 @@ class Order {
     }
     
     public function create($orderData) {
-        $orderData['order_number'] = $this->generateOrderNumber();
         $orderData['status'] = 'pending';
         $orderData['created_at'] = new MongoDB\BSON\UTCDateTime();
         
@@ -44,6 +43,11 @@ class Order {
     public function generateOrderNumber() {
         // Usar uniqid() para garantizar unicidad y compatibilidad con CartController
         return strtoupper('ORD-' . uniqid());
+    }
+    
+    public function getByEmail($email) {
+        // Ordenar por created_at en orden descendente (más recientes primero)
+        return $this->db->find('orders', ['customer_email' => $email], ['sort' => ['created_at' => -1]]);
     }
 }
 ?>

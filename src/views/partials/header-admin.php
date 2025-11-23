@@ -38,7 +38,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item m-2">
                         <span class="user-badge">
-                            <i class="bi bi-person-circle"></i> 
+                            <i class="bi bi-person-circle m-1"></i> 
                             <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?> 
                             <small>(<?php echo ucfirst($_SESSION['user_role'] ?? 'admin'); ?>)</small>
                         </span>

@@ -76,3 +76,4 @@
     </div>
 </footer>
 <script src="/js/menu.js"></script>
+<script src="/js/alerts.js"></script>

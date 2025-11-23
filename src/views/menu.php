@@ -16,6 +16,54 @@
     
     <main>
         <div class="container my-5">
+            <!-- Filtros por categoría -->
+            <div class="category-filters">
+                <div class="filter-container">
+                    <button class="filter-btn" data-filter="cafe-caliente">
+                        <div class="filter-icon">
+                            <i class="fas fa-mug-hot"></i>
+                        </div>
+                        <span>Café</span>
+                    </button>
+                    <button class="filter-btn" data-filter="te">
+                        <div class="filter-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <span>Té e<br>Infusiones</span>
+                    </button>
+                    <button class="filter-btn" data-filter="pasteleria">
+                        <div class="filter-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <span>Opciones<br>Dulces</span>
+                    </button>
+                    <button class="filter-btn" data-filter="snack-salado">
+                        <div class="filter-icon">
+                            <i class="fas fa-bowl-food"></i>
+                        </div>
+                        <span>Opciones<br>Saladas</span>
+                    </button>
+                    <button class="filter-btn" data-filter="bebida-fria">
+                        <div class="filter-icon">
+                            <i class="fas fa-glass-water"></i>
+                        </div>
+                        <span>Jugos</span>
+                    </button>
+                    <button class="filter-btn" data-filter="bebida-fria">
+                        <div class="filter-icon">
+                            <i class="fas fa-bottle-water"></i>
+                        </div>
+                        <span>Bebidas</span>
+                    </button>
+                    <button class="filter-btn" data-filter="vegan">
+                        <div class="filter-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <span>Opciones<br>Veganas</span>
+                    </button>
+                </div>
+            </div>
+
             <?php
             if (isset($products) && !empty($products)) {
                 // Agrupar productos por categoría
@@ -39,7 +87,7 @@
                 // Mostrar cada categoría
                 foreach ($categoryLabels as $key => $label) {
                     if (isset($categoriesByKey[$key])) {
-                        echo '<section>';
+                        echo '<section id="section-' . htmlspecialchars($key) . '">';
                         echo '<h2>' . htmlspecialchars($label) . '</h2>';
                         echo '<div class="products-grid">';
                         

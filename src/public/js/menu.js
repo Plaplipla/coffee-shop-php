@@ -167,6 +167,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Tecla ESC para cerrar
+    // Filtros de categoría - Índice con scroll
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            if (filter === 'all') {
+                // Scroll al inicio del menú
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (filter === 'vegan') {
+                // Para opciones veganas, scroll a cualquier sección (ejemplo)
+                const section = document.getElementById('section-pasteleria');
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            } else {
+                // Scroll a la sección correspondiente
+                const sectionId = 'section-' + filter;
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    });
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeProductModal();

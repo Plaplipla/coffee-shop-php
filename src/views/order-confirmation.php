@@ -52,7 +52,19 @@
                                 <p><strong>Teléfono:</strong><br><?php echo htmlspecialchars($orderData['customer_phone'] ?? ''); ?></p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Fecha del Pedido:</strong><br><?php echo htmlspecialchars($orderData['order_date'] ?? ''); ?></p>
+                                <p><strong>Fecha del Pedido:</strong><br>
+                                <?php
+                                    $orderDateRaw = $orderData['order_date'] ?? '';
+                                    $formattedDate = $orderDateRaw;
+                                    if (!empty($orderDateRaw)) {
+                                        $dateObj = DateTime::createFromFormat('Y-m-d H:i:s', $orderDateRaw);
+                                        if ($dateObj) {
+                                            $formattedDate = $dateObj->format('d/m/Y H:i');
+                                        }
+                                    }
+                                    echo htmlspecialchars($formattedDate);
+                                ?>
+                                </p>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -85,7 +97,10 @@
                         <?php
                             $orderTotal = floatval($orderData['total'] ?? 0);
                             $orderDelivery = floatval($orderData['delivery_fee'] ?? 0);
-                            $orderSubtotal = max(0, $orderTotal - $orderDelivery);
+                            $orderSubtotal = floatval($orderData['subtotal'] ?? 0);
+                            $orderDiscount = floatval($orderData['discount_amount'] ?? 0);
+                            $paymentMethod = $orderData['payment_method'] ?? 'card';
+                            $discountCode = $orderData['discount_code'] ?? '';
                         ?>
                         <div class="row">
                             <div class="col-md-6 offset-md-6">
@@ -93,14 +108,35 @@
                                     <span>Subtotal:</span>
                                     <span>$<?php echo number_format($orderSubtotal, 2); ?></span>
                                 </div>
+                                <?php if ($orderDiscount > 0): ?>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Descuento <?php echo htmlspecialchars($discountCode); ?>:</span>
+                                    <span class="text-success">-$<?php echo number_format($orderDiscount, 2); ?></span>
+                                </div>
+                                <?php endif; ?>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Envío:</span>
                                     <span>$<?php echo number_format($orderDelivery, 2); ?></span>
                                 </div>
+                                <hr class="my-2">
                                 <div class="d-flex justify-content-between mb-3">
                                     <strong>Total:</strong>
                                     <strong class="text-success h5">$<?php echo number_format($orderTotal, 2); ?></strong>
                                 </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Método de Pago:</strong><br>
+                                <?php if ($paymentMethod === 'card'): ?>
+                                    <i class="bi bi-credit-card"></i> Tarjeta al Recibir
+                                <?php elseif ($paymentMethod === 'cash'): ?>
+                                    <i class="bi bi-cash-coin"></i> Efectivo
+                                <?php else: ?>
+                                    <?php echo htmlspecialchars(ucfirst($paymentMethod)); ?>
+                                <?php endif; ?>
+                                </p>
                             </div>
                         </div>
                         <hr>

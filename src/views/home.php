@@ -87,7 +87,7 @@
                             <div class="card-body" style="display: grid">
                                 <h4 class="card-title">Latte Cremoso</h4>
                                 <p class="card-text">La estrella de la casa. Café suave y balanceado con leche vaporizada, coronado con una ligera espuma. Perfecto para quienes aman un café delicado pero con carácter.</p>
-                                <button class="btn btn-coffee">Pedir ahora</button>
+                                <a href="/menu" class="btn btn-coffee">Pedir ahora</a>
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                             <div class="card-body" style="display: grid">
                                 <h4 class="card-title">Brownie Casero</h4>
                                 <p class="card-text">Chocolate intenso, textura húmeda y ese toque de nueces que lo hace irresistible. Ideal para acompañar tu café o para darte un gusto sin culpa, pide opción sin azúcar.</p>
-                                <button class="btn btn-coffee">Pedir ahora</button>
+                                <a href="/menu" class="btn btn-coffee">Pedir ahora</a>
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                             <div class="card-body" style="display: grid">
                                 <h4 class="card-title">Croissant de Mantequilla</h4>
                                 <p class="card-text">Clásico, dorado y hojaldrado. Hecho con mantequilla de verdad y horneado cada mañana para mantener la frescura que se siente en cada mordisco.</p>
-                                <button class="btn btn-coffee">Pedir ahora</button>
+                                <a href="/menu" class="btn btn-coffee">Pedir ahora</a>
                             </div>
                         </div>
                     </div>

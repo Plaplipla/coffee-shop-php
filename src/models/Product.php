@@ -59,5 +59,16 @@ class Product {
         
         return $this->db->findOne('products', ['_id' => $id]);
     }
+    
+    // Obtener todas las categorías válidas del sistema
+    public function getCategories() {
+        return [
+            'cafe-caliente' => 'Cafés y Bebidas Calientes',
+            'te' => 'Té e Infusiones Naturales',
+            'bebida-fria' => 'Bebidas Frías',
+            'pasteleria' => 'Pastelería y Dulces',
+            'snack-salado' => 'Snacks y Opciones Saladas'
+        ];
+    }
 }
 ?>

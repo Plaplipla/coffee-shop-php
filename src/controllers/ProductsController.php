@@ -28,6 +28,7 @@ class ProductsController {
             $_SESSION['error'] = 'Acceso denegado.';
             header('Location: /home'); exit;
         }
+        $categories = $this->productModel->getCategories();
         require __DIR__ . '/../views/products_create.php';
     }
 
@@ -39,9 +40,19 @@ class ProductsController {
             header('Location: /home'); exit;
         }
 
+        $validCategories = array_keys($this->productModel->getCategories());
+        $category = $_POST['category'] ?? '';
+
+        // Validar que la categoría sea válida
+        if (!in_array($category, $validCategories)) {
+            $_SESSION['error'] = 'Categoría inválida. Selecciona una categoría válida.';
+            header('Location: /products/create');
+            exit;
+        }
+
         $data = [
             'name' => $_POST['name'] ?? '',
-            'category' => $_POST['category'] ?? '',
+            'category' => $category,
             'price' => floatval(str_replace([',',' '],'', $_POST['price'] ?? 0)),
             'stock' => intval($_POST['stock'] ?? 0),
             'image' => $_POST['image'] ?? '',
@@ -63,6 +74,7 @@ class ProductsController {
         $id = $_GET['id'] ?? null;
         if (!$id) { header('Location: /products'); exit; }
         $product = $this->productModel->getProductById($id);
+        $categories = $this->productModel->getCategories();
         require __DIR__ . '/../views/products_edit.php';
     }
 
@@ -73,11 +85,22 @@ class ProductsController {
             $_SESSION['error'] = 'Acceso denegado.';
             header('Location: /home'); exit;
         }
+        
+        $validCategories = array_keys($this->productModel->getCategories());
+        $category = $_POST['category'] ?? '';
+
+        // Validar que la categoría sea válida
+        if (!in_array($category, $validCategories)) {
+            $_SESSION['error'] = 'Categoría inválida. Selecciona una categoría válida.';
+            header('Location: /products/edit?id=' . urlencode($_POST['id'] ?? ''));
+            exit;
+        }
+
         $id = $_POST['id'] ?? null;
         if (!$id) { $_SESSION['error']='ID inválido'; header('Location:/products'); exit; }
         $data = [
             'name' => $_POST['name'] ?? '',
-            'category' => $_POST['category'] ?? '',
+            'category' => $category,
             'price' => floatval(str_replace([',',' '],'', $_POST['price'] ?? 0)),
             'stock' => intval($_POST['stock'] ?? 0),
             'image' => $_POST['image'] ?? '',

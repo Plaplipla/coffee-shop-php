@@ -171,7 +171,7 @@ db.products.insertMany([
         price: 3200,
         size: "Regular",
         icon: "bi bi-cup-hot-fill",
-        image: "images/products/white-tea.png",
+        image: "images/products/matcha.png",
         category: "te",
         is_coffee: false,
         stock: 15,

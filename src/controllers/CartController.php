@@ -80,7 +80,15 @@ class CartController {
             header('Location: /cart');
             exit;
         }
-        
+        // Determinar si el usuario (si está logueado) es su primer pedido
+        $isFirstOrder = true;
+        if (isset($_SESSION['user_email'])) {
+            require_once __DIR__ . '/../models/Order.php';
+            $orderModel = new Order();
+            $existing = $orderModel->getByEmail($_SESSION['user_email']);
+            $isFirstOrder = empty($existing);
+        }
+
         require __DIR__ . '/../views/checkout.php';
     }
     
@@ -105,19 +113,55 @@ class CartController {
                 $deliveryFee = 3000;
             }
 
+            // Procesar descuento y datos del cliente
+            $discountCode = isset($_POST['discount_code']) ? trim(strtoupper($_POST['discount_code'])) : '';
+            $discountPercentage = isset($_POST['discount_percentage']) ? intval($_POST['discount_percentage']) : 0;
+            $discountAmount = 0;
+            $paymentMethod = $_POST['payment_method'] ?? 'card';
+
+            // Obtener email del cliente (para validar primer pedido)
+            $customerEmail = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ($_POST['customer_email'] ?? '');
+
+            // Validar y aplicar descuento: solo aplicar si el código y el porcentaje coinciden
+            // y el cliente no tiene pedidos previos (primer pedido)
+            if ($discountCode === 'WELCOME15' && $discountPercentage === 15) {
+                $existingOrders = $orderModel->getByEmail($customerEmail);
+                if (empty($existingOrders)) {
+                    // Es primer pedido, aplicar descuento sobre el subtotal (solo productos)
+                    $subtotal = $this->getSessionCartTotal();
+                    $discountAmount = round($subtotal * ($discountPercentage / 100), 2);
+                } else {
+                    // No es elegible: eliminar el código para que la confirmación no muestre descuento
+                    $discountCode = '';
+                    $discountAmount = 0;
+                }
+            } elseif (!empty($discountCode)) {
+                // Código inválido: ignorar
+                $discountCode = '';
+                $discountAmount = 0;
+            }
+
             // Generar número de orden usando el método del modelo
             $orderNumber = $orderModel->generateOrderNumber();
+
+            // Calcular subtotal y total finales
+            $subtotal = $this->getSessionCartTotal();
+            $total = $subtotal + $deliveryFee - $discountAmount;
 
             $orderData = [
                 'order_number' => $orderNumber,
                 'customer_name' => $_POST['customer_name'],
-                'customer_email' => $_POST['customer_email'],
+                'customer_email' => $customerEmail,
                 'customer_phone' => $_POST['customer_phone'],
                 'delivery_type' => $deliveryType,
                 'delivery_address' => $deliveryAddress,
                 'delivery_fee' => $deliveryFee,
                 'items' => $cartItems,
-                'total' => $this->getSessionCartTotal() + $deliveryFee,
+                'subtotal' => $subtotal,
+                'discount_code' => $discountCode,
+                'discount_amount' => $discountAmount,
+                'total' => $total,
+                'payment_method' => $paymentMethod,
                 'order_date' => date('Y-m-d H:i:s'),
                 'status' => 'pending'
             ];
@@ -152,6 +196,28 @@ class CartController {
         
         $orderData = $_SESSION['order_data'];
         require __DIR__ . '/../views/order-confirmation.php';
+    }
+
+    /**
+     * Endpoint AJAX: verificar si un email es elegible para el descuento de primer pedido
+     * Responde JSON: { ok: true, eligible: true|false }
+     */
+    public function checkEmail() {
+        $email = trim($_GET['email'] ?? $_POST['email'] ?? '');
+        header('Content-Type: application/json');
+
+        if (empty($email)) {
+            echo json_encode(['ok' => false, 'eligible' => false]);
+            exit;
+        }
+
+        require_once __DIR__ . '/../models/Order.php';
+        $orderModel = new Order();
+        $existing = $orderModel->getByEmail($email);
+
+        $eligible = empty($existing);
+        echo json_encode(['ok' => true, 'eligible' => $eligible]);
+        exit;
     }
     
     // ==================== MÉTODOS DE SESIÓN ====================

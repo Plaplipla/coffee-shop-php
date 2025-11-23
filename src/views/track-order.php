@@ -8,7 +8,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        .order-tracking-container {
+            flex: 1;
+            padding: 2rem 1rem;
+        }
     </style>
 </head>
 <body>
@@ -136,7 +146,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Total:</span>
-                    <span class="detail-value">${<?php echo number_format($order->total, 2); ?></span>
+                    <span class="detail-value">$<?php echo number_format($order->total, 2); ?></span>
                 </div>
 
                 <div class="detail-row">
@@ -160,7 +170,28 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Fecha del Pedido:</span>
-                    <span class="detail-value"><?php echo date('d/m/Y H:i', strtotime($order->order_date)); ?></span>
+                    <span class="detail-value">
+                        <?php
+                            $formattedDate = 'Fecha no disponible';
+                            
+                            // Intentar formatear order_date primero
+                            if (isset($order->order_date) && !empty($order->order_date)) {
+                                $dateObj = DateTime::createFromFormat('Y-m-d H:i:s', $order->order_date);
+                                $formattedDate = $dateObj ? $dateObj->format('d/m/Y H:i') : $order->order_date;
+                            }
+                            // Si no, intentar formatear created_at (MongoDB UTCDateTime)
+                            elseif (isset($order->created_at) && !empty($order->created_at)) {
+                                if ($order->created_at instanceof MongoDB\BSON\UTCDateTime) {
+                                    $timestamp = $order->created_at->toDateTime();
+                                    $formattedDate = $timestamp->format('d/m/Y H:i');
+                                } else {
+                                    $formattedDate = (string)$order->created_at;
+                                }
+                            }
+                            
+                            echo htmlspecialchars($formattedDate);
+                        ?>
+                    </span>
                 </div>
 
                 <div class="detail-row">
@@ -177,7 +208,31 @@
                     <span class="detail-label">Email:</span>
                     <span class="detail-value"><?php echo htmlspecialchars($order->customer_email ?? 'No especificado'); ?></span>
                 </div>
-            </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Método de Pago:</span>
+                    <span class="detail-value">
+                        <?php 
+                            $paymentMethod = $order->payment_method ?? 'card';
+                            if ($paymentMethod === 'card'): ?>
+                                <i class="bi bi-credit-card"></i> Tarjeta al Recibir
+                            <?php elseif ($paymentMethod === 'cash'): ?>
+                                <i class="bi bi-cash-coin"></i> Efectivo
+                            <?php else: ?>
+                                <?php echo htmlspecialchars(ucfirst($paymentMethod)); ?>
+                            <?php endif; ?>
+                    </span>
+                </div>
+
+                <?php if (!empty($order->discount_code) || !empty($order->discount_amount)): ?>
+                <div class="detail-row">
+                    <span class="detail-label">Código de Descuento:</span>
+                    <span class="detail-value">
+                        <?php echo htmlspecialchars($order->discount_code ?? '-'); ?> 
+                        <span class="text-success">-$<?php echo number_format($order->discount_amount ?? 0, 2); ?></span>
+                    </span>
+                </div>
+                <?php endif; ?>
 
             <!-- Productos del pedido -->
             <div class="order-details mt-4">
@@ -417,5 +472,8 @@
     
     <?php endif; ?>
     </script>
+
+    <?php include __DIR__ . '/partials/footer.php'; ?>
+
 </body>
 </html>

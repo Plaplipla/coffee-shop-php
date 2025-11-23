@@ -19,44 +19,111 @@
     </div>
     
     <div class="container">
-        <!-- Selector de Período -->
-        <div class="period-selector">
-            <a href="/admin/reports?period=week" class="period-btn <?php echo ($period === 'week') ? 'active' : ''; ?>">
-                <i class="bi bi-calendar-week"></i> Última Semana
-            </a>
-            <a href="/admin/reports?period=month" class="period-btn <?php echo ($period === 'month') ? 'active' : ''; ?>">
-                <i class="bi bi-calendar-month"></i> Último Mes
-            </a>
-            <a href="/admin/reports?period=quarter" class="period-btn <?php echo ($period === 'quarter') ? 'active' : ''; ?>">
-                <i class="bi bi-calendar3"></i> Último Trimestre
-            </a>
-            <a href="/admin/reports?period=year" class="period-btn <?php echo ($period === 'year') ? 'active' : ''; ?>">
-                <i class="bi bi-calendar-check"></i> Último Año
-            </a>
+        <!-- Selector de Período y Comparación -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="period-selector">
+                    <a href="/admin/reports?period=week&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'week') ? 'active' : ''; ?>">
+                        <i class="bi bi-calendar-week"></i> Última Semana
+                    </a>
+                    <a href="/admin/reports?period=month&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'month') ? 'active' : ''; ?>">
+                        <i class="bi bi-calendar-month"></i> Último Mes
+                    </a>
+                    <a href="/admin/reports?period=quarter&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'quarter') ? 'active' : ''; ?>">
+                        <i class="bi bi-calendar3"></i> Último Trimestre
+                    </a>
+                    <a href="/admin/reports?period=year&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'year') ? 'active' : ''; ?>">
+                        <i class="bi bi-calendar-check"></i> Último Año
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label style="color: #8B4513; font-weight: 600; margin-bottom: 8px; display: block;">
+                    <i class="bi bi-bar-chart-line"></i> Comparar con:
+                </label>
+                <select class="form-select" id="comparisonSelect" onchange="updateComparison()" style="border-color: #CD853F;">
+                    <option value="none" <?php echo ($comparison ?? 'none') === 'none' ? 'selected' : ''; ?>>Sin comparación</option>
+                    <option value="previous" <?php echo ($comparison ?? 'none') === 'previous' ? 'selected' : ''; ?>>Período Anterior</option>
+                    <option value="same" <?php echo ($comparison ?? 'none') === 'same' ? 'selected' : ''; ?>>Mismo Período Año Anterior</option>
+                </select>
+            </div>
         </div>
+        
+        <script>
+            function updateComparison() {
+                const comparison = document.getElementById('comparisonSelect').value;
+                const period = '<?php echo $period; ?>';
+                window.location.href = `/admin/reports?period=${period}&comparison=${comparison}`;
+            }
+        </script>
 
         <!-- Resumen de Reportes -->
-        <h2 class="section-title">Resumen de Ingresos</h2>
+        <h2 class="section-title">Resumen de Ingresos <?php if ($comparisonData): ?><small style="font-size: 0.6em; color: #666;"> - Período Actual</small><?php endif; ?></h2>
         <div class="row">
             <div class="col-md-4">
                 <div class="report-card">
                     <h5><i class="bi bi-cash-coin"></i> Ingresos Totales</h5>
                     <div class="report-value">$<?php echo number_format($reports['total_revenue'], 2); ?></div>
+                    <?php if ($comparisonData): ?>
+                        <div class="comparison-badge <?php echo $comparisonData['revenue_change'] >= 0 ? 'positive' : 'negative'; ?>">
+                            <i class="bi bi-<?php echo $comparisonData['revenue_change'] >= 0 ? 'arrow-up' : 'arrow-down'; ?>"></i>
+                            <?php echo abs($comparisonData['revenue_change']); ?>% vs <?php echo $comparisonData['period_name']; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="report-card">
                     <h5><i class="bi bi-bag-check"></i> Total de Pedidos</h5>
                     <div class="report-value"><?php echo $reports['total_orders']; ?></div>
+                    <?php if ($comparisonData): ?>
+                        <div class="comparison-badge <?php echo $comparisonData['orders_change'] >= 0 ? 'positive' : 'negative'; ?>">
+                            <i class="bi bi-<?php echo $comparisonData['orders_change'] >= 0 ? 'arrow-up' : 'arrow-down'; ?>"></i>
+                            <?php echo abs($comparisonData['orders_change']); ?>% vs <?php echo $comparisonData['period_name']; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="report-card">
                     <h5><i class="bi bi-graph-up"></i> Consumo Promedio</h5>
                     <div class="report-value"><?php echo $reports['average_consumption']; ?> items</div>
+                    <?php if ($comparisonData): ?>
+                        <div class="comparison-badge <?php echo $comparisonData['consumption_change'] >= 0 ? 'positive' : 'negative'; ?>">
+                            <i class="bi bi-<?php echo $comparisonData['consumption_change'] >= 0 ? 'arrow-up' : 'arrow-down'; ?>"></i>
+                            <?php echo abs($comparisonData['consumption_change']); ?>% vs <?php echo $comparisonData['period_name']; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
+        
+        <?php if ($comparisonData): ?>
+        <!-- Comparación Histórica -->
+        <h2 class="section-title" style="margin-top: 40px;">
+            <i class="bi bi-clock-history"></i> <?php echo $comparisonData['period_name']; ?>
+        </h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="report-card" style="background-color: #f8f9fa; border-left: 4px solid #6c757d;">
+                    <h5><i class="bi bi-cash-coin"></i> Ingresos Totales</h5>
+                    <div class="report-value" style="color: #6c757d;">$<?php echo number_format($comparisonData['total_revenue'], 2); ?></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="report-card" style="background-color: #f8f9fa; border-left: 4px solid #6c757d;">
+                    <h5><i class="bi bi-bag-check"></i> Total de Pedidos</h5>
+                    <div class="report-value" style="color: #6c757d;"><?php echo $comparisonData['total_orders']; ?></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="report-card" style="background-color: #f8f9fa; border-left: 4px solid #6c757d;">
+                    <h5><i class="bi bi-graph-up"></i> Consumo Promedio</h5>
+                    <div class="report-value" style="color: #6c757d;"><?php echo $comparisonData['average_consumption']; ?> items</div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <!-- Pedidos por Estado -->
         <h2 class="section-title">Desglose de Pedidos por Estado</h2>
@@ -140,13 +207,13 @@
             <h3 style="color: #8B4513; margin-bottom: 20px;">
                 <i class="bi bi-download"></i> Exportar Reportes
             </h3>
-            <form method="POST" action="/admin/export" class="export-form">
-                <select name="format" class="form-select" style="max-width: 200px;">
+            <form method="POST" action="/admin/export" class="export-form" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <select name="format" class="form-select" style="max-width: 200px; flex: 0 0 auto;">
                     <option value="pdf">PDF</option>
                     <option value="excel">Excel (CSV)</option>
                 </select>
                 <input type="hidden" name="period" value="<?php echo htmlspecialchars($period); ?>">
-                <button type="submit" class="btn-export">
+                <button type="submit" class="btn-export" style="flex: 0 0 auto;">
                     <i class="bi bi-file-earmark-pdf"></i> Descargar
                 </button>
             </form>

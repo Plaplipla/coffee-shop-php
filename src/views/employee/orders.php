@@ -143,8 +143,23 @@
                                         $orderStatus = get_value($order, 'status', 'pending');
                                         $orderTotal = get_value($order, 'total', 0);
                                         $deliveryType = get_value($order, 'delivery_type', 'delivery');
-                                        $orderDate = get_value($order, 'order_date', date('Y-m-d H:i:s'));
+                                        $orderDateRaw = get_value($order, 'order_date', null);
+                                        $createdAtRaw = get_value($order, 'created_at', null);
                                         $orderId = (string)(get_value($order, '_id', get_value($order, '_id', '')));
+
+                                        // Formatear fecha - priorizar order_date, luego created_at
+                                        $formattedDate = date('d/m/Y H:i');
+                                        if (!empty($orderDateRaw)) {
+                                            $dateObj = DateTime::createFromFormat('Y-m-d H:i:s', $orderDateRaw);
+                                            $formattedDate = $dateObj ? $dateObj->format('d/m/Y H:i') : $orderDateRaw;
+                                        } elseif (!empty($createdAtRaw)) {
+                                            if ($createdAtRaw instanceof MongoDB\BSON\UTCDateTime) {
+                                                $timestamp = $createdAtRaw->toDateTime();
+                                                $formattedDate = $timestamp->format('d/m/Y H:i');
+                                            } else {
+                                                $formattedDate = (string)$createdAtRaw;
+                                            }
+                                        }
 
                                         $statusColors = [
                                             'pending' => 'warning',
@@ -181,7 +196,7 @@
                                         </td>
                                         <td><?php echo $deliveryLabel; ?></td>
                                         <td>
-                                            <small><?php echo date('d/m/Y H:i', strtotime($orderDate)); ?></small>
+                                            <small><?php echo htmlspecialchars($formattedDate); ?></small>
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" style="flex-wrap: wrap; gap: 4px;">

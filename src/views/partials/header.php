@@ -48,34 +48,82 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'administrador') {
                     <li class="nav-item">
                         <a class="nav-link" href="/contact">Contacto</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/track-order" style="color: #d4af37; font-weight: 600;">
-                            <i class="bi bi-box-seam m-1"></i> Seguir mi pedido
-                        </a>
-                    </li>
                 </ul>
                 
                 <ul class="navbar-nav">
-                    <li class="nav-item me-2">
-                        <a class="nav-link position-relative" href="/cart">
-                            <i class="bi bi-cart3" style="font-size: 1.2rem; color: white"></i> Carrito
-                            <?php 
-                            $cartCount = 0;
-                            if (isset($_SESSION['cart'])) {
-                                foreach ($_SESSION['cart'] as $item) {
-                                    $cartCount += $item['quantity'];
+                    <!-- Cliente no autenticado: Carrito normal -->
+                    <?php if (!isset($_SESSION['user_id'])): ?>
+                        <li class="nav-item me-2">
+                            <a class="nav-link position-relative" href="/cart">
+                                <i class="bi bi-cart3" style="font-size: 1.2rem; color: white"></i> Carrito
+                                <?php 
+                                $cartCount = 0;
+                                if (isset($_SESSION['cart'])) {
+                                    foreach ($_SESSION['cart'] as $item) {
+                                        $cartCount += $item['quantity'];
+                                    }
                                 }
-                            }
-                            if ($cartCount > 0): ?>
-                            <span class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
-                                <?php echo $cartCount; ?>
-                            </span>
-                            <?php endif; ?>
-                        </a>
-                    </li>
-                    
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                         <li class="nav-item m-2">
+                                if ($cartCount > 0): ?>
+                                <span class="position-absolute start-100 translate-middle badge rounded-pill bg-danger">
+                                    <?php echo $cartCount; ?>
+                                </span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                        <li class="nav-item d-flex flex-column align-items-center">
+                            <a class="btn user-badge mb-2" href="/register">Regístrate aquí</a>
+                            <small class="text-white">
+                                ¿Ya tienes cuenta? <a href="/login" style="color: #f5deb3;">Inicia sesión</a>
+                            </small>
+                        </li>
+                    <?php elseif ($_SESSION['user_role'] === 'cliente'): ?>
+                        <li class="nav-item dropdown">
+                            <button class="nav-link dropdown-toggle user-badge" 
+                                    id="clientDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="border: none; cursor: pointer;">
+                                <i class="bi bi-person-circle p-1"></i> 
+                                <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?>
+                                <small class="m-1">(Cliente)</small>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="clientDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="/cart">
+                                        <i class="bi bi-cart3"></i> 
+                                        Carrito
+                                        <?php 
+                                        $cartCount = 0;
+                                        if (isset($_SESSION['cart'])) {
+                                            foreach ($_SESSION['cart'] as $item) {
+                                                $cartCount += $item['quantity'];
+                                            }
+                                        }
+                                        if ($cartCount > 0): ?>
+                                            <span class="badge bg-danger ms-2"><?php echo $cartCount; ?></span>
+                                        <?php endif; ?>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="/track-order">
+                                        <i class="bi bi-box-seam"></i> Seguir mi pedido
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/order-history">
+                                        <i class="bi bi-receipt"></i> Historial de pedidos
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="/logout">
+                                        <i class="bi bi-box-arrow-right"></i> Salir
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php else: ?>
+                        <!-- Otros usuarios autenticados (empleado, etc) -->
+                        <li class="nav-item m-2">
                             <span class="user-badge">
                                 <i class="bi bi-person-circle m-1"></i> 
                                 <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Usuario'); ?> 
@@ -86,13 +134,6 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'administrador') {
                             <a href="/logout" class="btn btn-logout">
                                 <i class="bi bi-box-arrow-right"></i> Salir
                             </a>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item d-flex flex-column align-items-center">
-                            <a class="btn user-badge mb-2" href="/register">Regístrate aquí</a>
-                            <small class="text-white">
-                                ¿Ya tienes cuenta? <a href="/login" style="color: #f5deb3;">Inicia sesión</a>
-                            </small>
                         </li>
                     <?php endif; ?>
                 </ul>
