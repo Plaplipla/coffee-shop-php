@@ -7,6 +7,7 @@ Aplicación web de e-commerce para una cafetería desarrollada con PHP MVC, Mong
 - ✅ Dockerizado con hot-reload
 - ✅ Sistema de autenticación con cookies
 - ✅ 3 tipos de usuarios: Cliente, Trabajador, Administrador
+- ✅ **💳 Pasarela de pagos con Stripe** (Tarjeta, Efectivo, Online)
 - ✅ Panel administrativo con reportes financieros y mensajes de contacto
 - ✅ Seguimiento de pedidos en tiempo real con actualización automática
 - ✅ Sistema de contacto con almacenamiento en MongoDB
@@ -322,18 +323,12 @@ docker-compose restart
 - 📊 Reportes financieros con exportación PDF/Excel
 - 🔍 Seguimiento de pedidos en tiempo real (polling cada 5s)
 - 👥 Autenticación multirol (Cliente, Empleado, Admin)
+- 💳 **Pasarela de pagos con Stripe** (Online, Tarjeta al recibir, Efectivo)
 - 💳 Confirmación de órdenes con resumen detallado
 - 📧 Sistema de contacto con panel de mensajes para admin
 - 🎨 Gestión de productos con soft delete (activar/desactivar)
 - 🖼️ Imágenes de productos desde URLs externas
 - 🧹 Código optimizado sin duplicaciones
-
-### 📝 Próximas Mejoras
-- 💳 Sistema de pagos integrado
-- 📱 Aplicación móvil nativa
-- 🤖 Recomendaciones con IA
-- 📧 Notificaciones por email
-- 📱 Push notifications
 
 ## 👨‍💻 Desarrollo
 
@@ -352,23 +347,28 @@ Toda la documentación está organizada en la carpeta `docs/`:
 | Documento | Descripción |
 |-----------|-------------|
 | [INDEX.md](docs/INDEX.md) | 📑 Índice general de toda la documentación |
+| [README.md](docs/README.md) | 📖 Resumen de la documentación |
 | [QUICKSTART.md](docs/QUICKSTART.md) | 🚀 Guía de inicio rápido (3 pasos) |
-| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | 🏗️ Arquitectura técnica detallada |
-| [COMMANDS.md](docs/COMMANDS.md) | ⌨️ Lista completa de comandos útiles |
-| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | 🔧 Solución de problemas comunes |
-| [CHECKLIST.md](docs/CHECKLIST.md) | ✅ Lista de verificación del proyecto |
-| [STATUS.md](docs/STATUS.md) | 📊 Estado actual del proyecto |
-| [SUMMARY.md](docs/SUMMARY.md) | 📋 Resumen ejecutivo |
 | [PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md) | 🎯 Visión general del proyecto |
-| [ADMIN_MODULE_VERIFICATION.md](docs/ADMIN_MODULE_VERIFICATION.md) | 🆕 ✅ Verificación del módulo administrador (HU-007) |
-| [ADMIN_IMPLEMENTATION.md](docs/ADMIN_IMPLEMENTATION.md) | 🆕 📋 Detalles de implementación del panel admin |
-| [ADMIN_CHECKLIST.md](docs/ADMIN_CHECKLIST.md) | 🆕 ✅ Checklist completo de funcionalidades admin |
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | 🏗️ Arquitectura técnica detallada |
+| [BUSINESS_FLOW.md](docs/BUSINESS_FLOW.md) | 💼 Flujo de negocio y procesos |
+| [DATABASE.md](docs/DATABASE.md) | 🗄️ Estructura de base de datos |
+| [COMMANDS.md](docs/COMMANDS.md) | ⌨️ Lista completa de comandos útiles |
+| [CHECKLIST.md](docs/CHECKLIST.md) | ✅ Lista de verificación del proyecto |
+| [IMPLEMENTATION_CHECKLIST.md](docs/IMPLEMENTATION_CHECKLIST.md) | 📋 Checklist de implementación |
+
+### 💳 Documentación de Stripe (Pagos)
+
+| Documento | Descripción |
+|-----------|-------------|
+| [STRIPE_PAYMENT.md](docs/STRIPE_PAYMENT.md) | 💳 Guía completa de integración de Stripe |
 
 ### 🎯 Por Dónde Empezar
 
 - **Nuevo en el proyecto?** → Lee [docs/QUICKSTART.md](docs/QUICKSTART.md)
+- **Configurar pagos con Stripe?** → Lee [docs/STRIPE_PAYMENT.md](docs/STRIPE_PAYMENT.md)
 - **Quieres entender la arquitectura?** → Lee [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- **Tienes un problema?** → Consulta [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- **Ver estructura de BD?** → Consulta [docs/DATABASE.md](docs/DATABASE.md)
 - **Necesitas comandos?** → Revisa [docs/COMMANDS.md](docs/COMMANDS.md)
 
 ---

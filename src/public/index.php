@@ -32,8 +32,9 @@ $uri = trim($uri, '/');
 // RUTAS PÚBLICAS
 $publicRoutes = [
     '', 'home', 'login', 'auth/login', 'register', 'auth/register',
-    'cart', 'cart/add', 'cart/remove', 'cart/update-quantity', 'cart/clear',
+    'cart', 'cart/add', 'cart/remove', 'cart/update-quantity', 'cart/clear', 'cart/check-email',
     'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'contact/send', 'about',
+    'payment/create-checkout', 'payment/success', 'payment/cancel', 'payment/webhook',
     'employee/orders', 'admin/dashboard', 'admin/reports', 'admin/export', 'track-order', 'order-history'
 ];
 
@@ -141,6 +142,32 @@ switch ($uri) {
     case 'cart/order-confirmation':
         $controller = new CartController();
         $controller->orderConfirmation();
+        break;
+
+    case 'cart/check-email':
+        $controller = new CartController();
+        $controller->checkEmail();
+        break;
+
+    // RUTAS DE PAGOS CON STRIPE
+    case 'payment/create-checkout':
+        $controller = new PaymentController();
+        $controller->createCheckoutSession();
+        break;
+
+    case 'payment/success':
+        $controller = new PaymentController();
+        $controller->success();
+        break;
+
+    case 'payment/cancel':
+        $controller = new PaymentController();
+        $controller->cancel();
+        break;
+
+    case 'payment/webhook':
+        $controller = new PaymentController();
+        $controller->webhook();
         break;
 
     case 'employee/orders':

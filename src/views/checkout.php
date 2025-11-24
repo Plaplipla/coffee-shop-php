@@ -72,13 +72,24 @@
                             <div class="mb-3">
                                 <label class="form-label">Método de Pago *</label>
                                 <div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="payment_method" id="paymentCard" value="card" checked>
-                                        <label class="form-check-label" for="paymentCard"><i class="bi bi-credit-card"></i> Tarjeta al Recibir</label>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="paymentStripe" value="stripe" checked>
+                                        <label class="form-check-label" for="paymentStripe">
+                                            <i class="bi bi-credit-card-2-front"></i> <strong>Pagar Online con Stripe</strong>
+                                            <small class="d-block text-muted ms-4">Pago seguro con tarjeta de crédito/débito</small>
+                                        </label>
                                     </div>
-                                    <div class="form-check form-check-inline">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="payment_method" id="paymentCard" value="card">
+                                        <label class="form-check-label" for="paymentCard">
+                                            <i class="bi bi-credit-card"></i> Tarjeta al Recibir
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
                                         <input class="form-check-input" type="radio" name="payment_method" id="paymentCash" value="cash">
-                                        <label class="form-check-label" for="paymentCash"><i class="bi bi-cash-coin"></i> Efectivo</label>
+                                        <label class="form-check-label" for="paymentCash">
+                                            <i class="bi bi-cash-coin"></i> Efectivo
+                                        </label>
                                     </div>
                                 </div>
                             </div>

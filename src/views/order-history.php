@@ -36,7 +36,7 @@
         <?php endif; ?>
 
         <?php if (empty($userOrders)): ?>
-            <div class="alert bg-white text-center">
+            <div class="empty-block bg-white text-center">
                 <i class="bi bi-inbox product-icon"></i>
                 <h4 class="mt-3">Aún no tienes pedidos</h4>
                 <p>¡Realiza tu primer pedido y aparecerá aquí!</p>

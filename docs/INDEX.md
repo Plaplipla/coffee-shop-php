@@ -94,6 +94,13 @@ Bienvenido al proyecto Coffee Shop E-commerce. Esta es tu guía para navegar tod
 - 🔄 Progreso del proyecto
 - 📝 Tareas completadas y pendientes
 
+### 11. **[STRIPE_PAYMENT.md](STRIPE_PAYMENT.md)** 💳 PAGOS CON STRIPE
+- 💳 Integración de Stripe completa
+- 🔧 Configuración paso a paso
+- 🧪 Guía de pruebas
+- 🎨 Flujo visual de pago
+- ✅ Estado: Probado y funcionando
+
 ---
 
 ## 📁 Archivos de Configuración
@@ -177,6 +184,7 @@ src/
 | Ver la arquitectura | [ARCHITECTURE.md](ARCHITECTURE.md) |
 | Entender flujos de negocio | [BUSINESS_FLOW.md](BUSINESS_FLOW.md) |
 | Ver modelo de base de datos | [DATABASE.md](DATABASE.md) |
+| Configurar pagos con Stripe | [STRIPE_PAYMENT.md](STRIPE_PAYMENT.md) |
 | Comandos útiles | [COMMANDS.md](COMMANDS.md) |
 | Verificar instalación | [CHECKLIST.md](CHECKLIST.md) |
 | Documentación completa | [../README.md](../README.md) |
@@ -224,6 +232,7 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 5. [BUSINESS_FLOW.md](BUSINESS_FLOW.md)
 6. [DATABASE.md](DATABASE.md)
 7. [COMMANDS.md](COMMANDS.md)
+8. [STRIPE_PAYMENT.md](STRIPE_PAYMENT.md)
 
 ### 🟢 Prioridad Baja (Referencia)
 8. [../README.md](../README.md)
@@ -247,6 +256,7 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 
 ### 🛠️ Referencia Técnica
 - COMMANDS.md
+- STRIPE_PAYMENT.md
 
 ### ✅ Verificación
 - CHECKLIST.md
@@ -259,12 +269,15 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 
 ---
 
-## 🔍 Búsqueda Rápida
+### 🔍 Búsqueda Rápida
 
 ### ¿Cómo hacer...?
 
 **¿Cómo levantar el proyecto?**
 → [QUICKSTART.md](QUICKSTART.md) sección "Iniciar el Proyecto"
+
+**¿Cómo configurar pagos con Stripe?**
+→ [STRIPE_PAYMENT.md](STRIPE_PAYMENT.md) sección "Configuración Rápida"
 
 **¿Cómo funciona el login?**
 → [ARCHITECTURE.md](ARCHITECTURE.md) sección "Sistema de Sesiones"

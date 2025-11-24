@@ -46,7 +46,7 @@
         ?>
 
         <?php if (empty($cartItems)): ?>
-            <div class="alert bg-white text-center">
+            <div class="empty-block bg-white text-center">
                 <i class="bi bi-cart-x product-icon"></i>
                 <h4 class="mt-3">Tu carrito está vacío</h4>
                 <p>¡Descubre nuestros deliciosos cafés!</p>

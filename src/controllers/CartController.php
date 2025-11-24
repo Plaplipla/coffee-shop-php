@@ -116,6 +116,12 @@ class CartController {
             $discountPercentage = isset($_POST['discount_percentage']) ? intval($_POST['discount_percentage']) : 0;
             $discountAmount = 0;
             $paymentMethod = $_POST['payment_method'] ?? 'card';
+            
+            // Si el método de pago es Stripe, redirigir al flujo de pago online
+            if ($paymentMethod === 'stripe') {
+                $this->processStripePayment();
+                return;
+            }
 
             // Obtener email del cliente (para validar primer pedido)
             $customerEmail = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ($_POST['customer_email'] ?? '');
@@ -312,6 +318,78 @@ class CartController {
     
     private function clearSessionCart() {
         $_SESSION['cart'] = [];
+    }
+    
+    /**
+     * Procesar pago con Stripe
+     * Prepara los datos del pedido y redirige a la creación de sesión de Stripe
+     */
+    private function processStripePayment() {
+        $cartItems = $this->getSessionCartItems();
+        
+        // Preparar datos del pedido
+        $deliveryType = $_POST['delivery_type'] ?? 'delivery';
+        $deliveryAddress = $_POST['delivery_address'] ?? '';
+        $deliveryFee = 0;
+        if ($deliveryType === 'delivery') {
+            $deliveryFee = 3000;
+        }
+        
+        // Procesar descuento
+        $discountCode = isset($_POST['discount_code']) ? trim(strtoupper($_POST['discount_code'])) : '';
+        $discountPercentage = isset($_POST['discount_percentage']) ? intval($_POST['discount_percentage']) : 0;
+        $discountAmount = 0;
+        
+        // Obtener email del cliente
+        $customerEmail = isset($_SESSION['user_email']) ? $_SESSION['user_email'] : ($_POST['customer_email'] ?? '');
+        
+        // Validar descuento WELCOME15
+        if ($discountCode === 'WELCOME15' && $discountPercentage === 15) {
+            $existingOrders = $this->orderModel->getByEmail($customerEmail);
+            if (empty($existingOrders)) {
+                $subtotal = $this->getSessionCartTotal();
+                $discountAmount = round($subtotal * ($discountPercentage / 100), 2);
+            } else {
+                $discountCode = '';
+                $discountAmount = 0;
+            }
+        } elseif (!empty($discountCode)) {
+            $discountCode = '';
+            $discountAmount = 0;
+        }
+        
+        // Generar número de orden
+        $orderNumber = $this->orderModel->generateOrderNumber();
+        
+        // Calcular totales
+        $subtotal = $this->getSessionCartTotal();
+        $total = $subtotal + $deliveryFee - $discountAmount;
+        
+        // Preparar datos del pedido para guardar en sesión (pendiente de pago)
+        $orderData = [
+            'order_number' => $orderNumber,
+            'customer_name' => $_POST['customer_name'],
+            'customer_email' => $customerEmail,
+            'customer_phone' => $_POST['customer_phone'],
+            'delivery_type' => $deliveryType,
+            'delivery_address' => $deliveryAddress,
+            'delivery_fee' => $deliveryFee,
+            'items' => $cartItems,
+            'subtotal' => $subtotal,
+            'discount_code' => $discountCode,
+            'discount_amount' => $discountAmount,
+            'total' => $total,
+            'payment_method' => 'stripe',
+            'order_date' => date('Y-m-d H:i:s'),
+            'status' => 'pending_payment'
+        ];
+        
+        // Guardar en sesión para recuperar después del pago
+        $_SESSION['pending_order'] = $orderData;
+        
+        // Redirigir al controlador de pagos para crear sesión de Stripe
+        header('Location: /payment/create-checkout');
+        exit;
     }
 }
 ?>
