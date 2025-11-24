@@ -22,7 +22,7 @@
             $description = is_object($p) ? ($p->description ?? '') : ($p['description'] ?? '');
             $is_new = is_object($p) ? (!empty($p->is_new)) : (!empty($p['is_new']));
         ?>
-        <form method="POST" action="/products/update">
+        <form method="POST" action="/products/update" class="mb-3">
             <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
@@ -52,8 +52,9 @@
                 <input class="form-control" name="stock" value="<?php echo htmlspecialchars($stock); ?>">
             </div>
             <div class="mb-3">
-                <label class="form-label">Imagen (ruta)</label>
-                <input class="form-control" name="image" value="<?php echo htmlspecialchars($image); ?>">
+                <label class="form-label">Imagen (URL)</label>
+                <input class="form-control" type="url" name="image" value="<?php echo htmlspecialchars($image); ?>" placeholder="https://i.postimg.cc/...">
+                <small class="form-text text-muted">URL completa de la imagen. Ejemplo: https://i.postimg.cc/...</small>
             </div>
             <div class="mb-3">
                 <label class="form-label">Descripción</label>

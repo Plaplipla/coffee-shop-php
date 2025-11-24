@@ -7,12 +7,15 @@ Aplicación web de e-commerce para una cafetería desarrollada con PHP MVC, Mong
 - ✅ Dockerizado con hot-reload
 - ✅ Sistema de autenticación con cookies
 - ✅ 3 tipos de usuarios: Cliente, Trabajador, Administrador
-- ✅ Panel administrativo con reportes financieros
-- ✅ Seguimiento de pedidos en tiempo real
+- ✅ Panel administrativo con reportes financieros y mensajes de contacto
+- ✅ Seguimiento de pedidos en tiempo real con actualización automática
+- ✅ Sistema de contacto con almacenamiento en MongoDB
+- ✅ Gestión de productos con activar/desactivar (soft delete)
+- ✅ Exportación de reportes a PDF y Excel
 - ✅ Arquitectura MVC simple y ordenada
 - ✅ Bootstrap 5 con colores temáticos de cafetería
 - ✅ MongoDB como base de datos
-- ✅ AJAX para interacciones sin recargar página
+- ✅ Código limpio sin duplicaciones
 
 ## 📁 Estructura del Proyecto
 
@@ -35,11 +38,13 @@ php-proyect/
 │   └── ...más documentos
 └── src/
     ├── controllers/            # Controladores MVC
-    │   ├── AdminController.php        # 🆕 Panel administrativo
-    │   ├── AuthController.php
-    │   ├── CartController.php
-    │   ├── EmployeeController.php
-    │   ├── HomeController.php
+    │   ├── AdminController.php        # Panel administrativo y mensajes
+    │   ├── AuthController.php         # Autenticación
+    │   ├── CartController.php         # Carrito y checkout
+    │   ├── ContactController.php      # Formulario de contacto
+    │   ├── EmployeeController.php     # Panel empleados
+    │   ├── HomeController.php         # Páginas públicas
+    │   ├── ProductsController.php     # Gestión de productos
     │   └── TrackingController.php     # Seguimiento de pedidos
     ├── core/                   # Núcleo del sistema
     │   └── Database.php
@@ -53,31 +58,35 @@ php-proyect/
     │   │   └── style.css
     │   ├── images/
     │   │   ├── icons-rrss/
-    │   │   ├── products/
     │   │   └── ... más imagenes del home
     │   ├── js/
     │   │   └── menu.js
     │   ├── .htaccess
     │   └── index.php
     ├── views/                  # Vistas
-    │   ├── admin/              # 🆕 Panel administrador
-    │   │   ├── dashboard.php   # 🆕 Dashboard con métricas
-    │   │   └── reports.php     # 🆕 Reportes financieros
+    │   ├── admin/              # Panel administrador
+    │   │   ├── dashboard.php   # Dashboard con métricas y mensajes
+    │   │   ├── reports.php     # Reportes financieros
+    │   │   └── messages.php    # Gestión de mensajes de contacto
     │   ├── employee/
     │   │   └── orders.php
     │   ├── partials/           # Componentes reutilizables
     │   │   ├── header.php      # Router de navbars
-    │   │   ├── header-admin.php      # 🆕 Navbar para admin
+    │   │   ├── header-admin.php
     │   │   ├── header-employee.php
     │   │   └── footer.php
     │   ├── about.php
     │   ├── cart.php
     │   ├── checkout.php
-    │   ├── contact.php
+    │   ├── contact.php         # Formulario de contacto
     │   ├── home.php
     │   ├── login.php
     │   ├── menu.php
     │   ├── order-confirmation.php
+    │   ├── order-history.php
+    │   ├── products.php        # Gestión de productos (admin)
+    │   ├── products_create.php
+    │   ├── products_edit.php
     │   ├── register.php
     │   └── track-order.php     # Seguimiento en tiempo real
     
@@ -150,7 +159,7 @@ La aplicación usa una paleta de colores inspirada en cafetería:
 
 ## 📱 Páginas Implementadas
 
-### 👨‍💼 Panel Administrador (NEW - HU-007) ✨
+### 👨‍💼 Panel Administrador
 
 **Acceso:** `/admin/dashboard` (solo admin)
 
@@ -162,6 +171,7 @@ La aplicación usa una paleta de colores inspirada en cafetería:
   - Valor promedio por pedido
 - 📈 Resumen general con tasa de conversión
 - ⭐ Top 5 productos más vendidos
+- 📧 Mensajes de contacto recientes (5 últimos)
 - 🔗 Acciones rápidas a reportes y gestión de pedidos
 
 #### Reportes Financieros (`/admin/reports`)
@@ -169,7 +179,19 @@ La aplicación usa una paleta de colores inspirada en cafetería:
 - 💰 Resumen de ingresos del período
 - 📦 Desglose de pedidos por estado con barras de progreso
 - 📊 Ingresos mensuales desglosados
-- 📥 Exportación de reportes en PDF o Excel
+- 📥 Exportación de reportes en PDF o Excel con estilos profesionales
+
+#### Gestión de Productos (`/products`)
+- 📝 Crear, editar productos
+- 🔄 Activar/Desactivar productos (soft delete)
+- 🖼️ Imágenes desde URLs externas (Postimg)
+- 👁️ Vista diferenciada para admin (ve todos) y clientes (solo activos)
+
+#### Mensajes de Contacto (`/admin/messages`)
+- 📨 Lista completa de mensajes recibidos
+- ✅ Marcar como leído/no leído
+- 📧 Email clickable para responder
+- 📅 Fecha y hora de envío
 
 #### Seguridad
 - 🔐 Acceso restringido solo a rol 'administrador'
@@ -190,9 +212,17 @@ La aplicación usa una paleta de colores inspirada en cafetería:
 
 ### Seguimiento de Pedidos (`/track-order`)
 - 🔍 Búsqueda de pedidos por número
-- ⏱️ Actualización automática en tiempo real
-- 📍 Estado del pedido con línea de tiempo
-- 🔔 Notificaciones visuales de cambios
+- ⏱️ Actualización automática cada 5 segundos (sin recargar página)
+- 📍 Estado del pedido con línea de tiempo interactiva
+- 🔔 Cambios de estado reflejados en tiempo real
+- 🎨 Alertas con colores según estado (info, warning, success)
+
+### Contacto (`/contact`)
+- 📝 Formulario de contacto con validación
+- ✉️ Mensajes almacenados en MongoDB (colección `contactos`)
+- ✅ Notificación de éxito con auto-cierre (5 segundos)
+- 📱 Diseño responsivo con gradientes y tarjetas
+- 🔔 Mensajes específicos para contacto (no interfieren con otros alerts)
 
 ## 🔒 Sistema de Sesiones
 
@@ -286,13 +316,17 @@ docker-compose restart
 ## 📊 Funcionalidades Implementadas
 
 ### ✅ Completadas
-- 🛒 Carrito de compras
-- 📦 Gestión de pedidos
-- 👨‍💼 Panel de administración con reportes (HU-007)
-- 📊 Reportes y estadísticas financieras
-- 🔍 Seguimiento de pedidos en tiempo real
+- 🛒 Carrito de compras con descuentos
+- 📦 Gestión completa de pedidos
+- 👨‍💼 Panel de administración con dashboard y reportes
+- 📊 Reportes financieros con exportación PDF/Excel
+- 🔍 Seguimiento de pedidos en tiempo real (polling cada 5s)
 - 👥 Autenticación multirol (Cliente, Empleado, Admin)
-- 💳 Confirmación de órdenes
+- 💳 Confirmación de órdenes con resumen detallado
+- 📧 Sistema de contacto con panel de mensajes para admin
+- 🎨 Gestión de productos con soft delete (activar/desactivar)
+- 🖼️ Imágenes de productos desde URLs externas
+- 🧹 Código optimizado sin duplicaciones
 
 ### 📝 Próximas Mejoras
 - 💳 Sistema de pagos integrado

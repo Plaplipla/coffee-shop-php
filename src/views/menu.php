@@ -16,7 +16,6 @@
     
     <main>
         <div class="container my-5">
-            <!-- Filtros por categoría -->
             <div class="category-filters">
                 <div class="filter-container">
                     <button class="filter-btn" data-filter="cafe-caliente">
@@ -84,7 +83,6 @@
                     $categoriesByKey[$cat][] = $product;
                 }
                 
-                // Mostrar cada categoría
                 foreach ($categoryLabels as $key => $label) {
                     if (isset($categoriesByKey[$key])) {
                         echo '<section id="section-' . htmlspecialchars($key) . '">';
@@ -158,7 +156,6 @@
         </div>
     </main>
     
-    <!-- Modal del Producto -->
     <div class="product-modal" id="productModal">
         <div class="modal-content-product">
             <button class="modal-close-btn" onclick="closeProductModal()">✕</button>

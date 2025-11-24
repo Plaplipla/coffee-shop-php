@@ -8,16 +8,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/style.css">
     <style>
-        html, body {
-            height: 100%;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-        main {
-            flex: 1;
-        }
+        html, body { height: 100%; }
+        body { display: flex; flex-direction: column; }
+        main { flex: 1; }
     </style>
 </head>
 <body>
@@ -26,7 +19,6 @@
     <main class="container mt-4 mb-5">
         <h1><i class="bi bi-receipt"></i> Historial de Pedidos</h1>
         
-        <!-- Mensajes de éxito/error -->
         <?php if (isset($_SESSION['success'])): ?>
             <div class="alert alert-light border-start border-4 border-success alert-dismissible fade show" role="alert">
                 <i class="bi bi-check-circle-fill text-success me-2"></i> 

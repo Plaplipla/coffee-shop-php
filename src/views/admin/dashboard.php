@@ -75,9 +75,9 @@
             </div>
         </div>
 
-        <!-- Productos Más Vendidos -->
+        <!-- Productos Más Vendidos y Mensajes de Contacto -->
         <div class="row my-4">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <h3 class="section-title"><i class="bi bi-star"></i> Productos Más Vendidos</h3>
                 <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <?php if (!empty($metrics['top_products'])): ?>
@@ -94,6 +94,36 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p class="text-muted">No hay datos de productos disponibles</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0"><i class="bi bi-envelope"></i> Mensajes Recientes</h3>
+                    <a href="/admin/messages" class="btn btn-sm btn-coffee">Ver todos</a>
+                </div>
+                <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-height: 400px; overflow-y: auto;">
+                    <?php if (!empty($contactMessages)): ?>
+                        <?php foreach (array_slice($contactMessages, 0, 5) as $msg): 
+                            $msgObj = is_array($msg) ? (object)$msg : $msg;
+                            $isRead = !empty($msgObj->leido);
+                            $fecha = isset($msgObj->fecha) ? $msgObj->fecha->toDateTime()->format('d/m/Y H:i') : 'N/A';
+                        ?>
+                            <div class="message-item" style="padding: 12px; border-left: 4px solid <?php echo $isRead ? '#6c757d' : '#D4A574'; ?>; background: <?php echo $isRead ? '#f8f9fa' : '#fff8f0'; ?>; margin-bottom: 10px; border-radius: 5px;">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <strong style="color: var(--coffee-dark);"><?php echo htmlspecialchars($msgObj->nombre ?? 'N/A'); ?></strong>
+                                    <small class="text-muted"><?php echo $fecha; ?></small>
+                                </div>
+                                <small class="text-muted d-block mb-1"><?php echo htmlspecialchars($msgObj->email ?? 'N/A'); ?></small>
+                                <p class="mb-0" style="font-size: 0.9rem;"><?php echo htmlspecialchars(substr($msgObj->mensaje ?? '', 0, 80)); ?><?php echo strlen($msgObj->mensaje ?? '') > 80 ? '...' : ''; ?></p>
+                                <?php if (!$isRead): ?>
+                                    <span class="badge bg-warning text-dark mt-2">Nuevo</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-muted text-center py-4">No hay mensajes de contacto</p>
                     <?php endif; ?>
                 </div>
             </div>

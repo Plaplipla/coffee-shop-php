@@ -33,7 +33,7 @@ $uri = trim($uri, '/');
 $publicRoutes = [
     '', 'home', 'login', 'auth/login', 'register', 'auth/register',
     'cart', 'cart/add', 'cart/remove', 'cart/update-quantity', 'cart/clear',
-    'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'about',
+    'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'contact/send', 'about',
     'employee/orders', 'admin/dashboard', 'admin/reports', 'admin/export', 'track-order', 'order-history'
 ];
 
@@ -57,8 +57,13 @@ switch ($uri) {
         break;
         
     case 'contact':
-        $controller = new HomeController();
-        $controller->contact();
+        $controller = new ContactController();
+        $controller->index();
+        break;
+    
+    case 'contact/send':
+        $controller = new ContactController();
+        $controller->send();
         break;
         
     case 'about':
@@ -173,6 +178,11 @@ switch ($uri) {
         $controller->update();
         break;
 
+    case 'products/toggle-status':
+        $controller = new ProductsController();
+        $controller->toggleStatus();
+        break;
+
     case 'products/delete':
         $controller = new ProductsController();
         $controller->delete();
@@ -191,6 +201,16 @@ switch ($uri) {
     case 'admin/export':
         $controller = new AdminController();
         $controller->export();
+        break;
+
+    case 'admin/messages':
+        $controller = new AdminController();
+        $controller->messages();
+        break;
+
+    case 'admin/mark-message-read':
+        $controller = new AdminController();
+        $controller->markMessageRead();
         break;
 
     case 'track-order':

@@ -12,10 +12,6 @@ class HomeController {
         include __DIR__ . '/../views/menu.php';
     }
     
-    public function contact() {
-        include __DIR__ . '/../views/contact.php';
-    }
-    
     public function about() {
         include __DIR__ . '/../views/about.php';
     }

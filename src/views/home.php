@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <?php include 'partials/header.php'; ?>
+    <?php include __DIR__ . '/partials/header.php'; ?>
 
     <main>
         <section class="bienvenida py-5">
@@ -83,7 +83,7 @@
                 <div class="row">
                     <div class="col-md-4 mb-4">
                         <div class="card-best-seller card h-100 p-3">
-                            <img class="card-img-top" src="images/Latte_Cremoso.jpg" alt="Latte Cremoso" style="height: 250px; object-fit: cover; border-radius: 10px;">
+                            <img class="card-img-top" src="https://i.postimg.cc/BnX2RJJ9/iced-latte.png" alt="Latte Cremoso" style="height: 250px; object-fit: cover; border-radius: 10px;">
                             <div class="card-body" style="display: grid">
                                 <h4 class="card-title">Latte Cremoso</h4>
                                 <p class="card-text">La estrella de la casa. Café suave y balanceado con leche vaporizada, coronado con una ligera espuma. Perfecto para quienes aman un café delicado pero con carácter.</p>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="col-md-4 mb-4">
                         <div class="card-best-seller card h-100 p-3">
-                            <img class="card-img-top" src="images/products/brownie.jpg" alt="brownie de chocolate" style="height: 250px; object-fit: cover; border-radius: 10px;">
+                            <img class="card-img-top" src="https://i.postimg.cc/MKsysn2f/brownie.jpg" alt="brownie de chocolate" style="height: 250px; object-fit: cover; border-radius: 10px;">
                             <div class="card-body" style="display: grid">
                                 <h4 class="card-title">Brownie Casero</h4>
                                 <p class="card-text">Chocolate intenso, textura húmeda y ese toque de nueces que lo hace irresistible. Ideal para acompañar tu café o para darte un gusto sin culpa, pide opción sin azúcar.</p>
@@ -103,7 +103,7 @@
                     </div>
                     <div class="col-md-4 mb-4">
                         <div class="card-best-seller card h-100 p-3">
-                            <img class="card-img-top" src="images/products/Croissant.jpg" alt="Croissant de mantequilla" style="height: 250px; object-fit: cover; border-radius: 10px;">
+                            <img class="card-img-top" src="https://i.postimg.cc/15WpW8hG/croissant.jpg" alt="Croissant de mantequilla" style="height: 250px; object-fit: cover; border-radius: 10px;">
                             <div class="card-body" style="display: grid">
                                 <h4 class="card-title">Croissant de Mantequilla</h4>
                                 <p class="card-text">Clásico, dorado y hojaldrado. Hecho con mantequilla de verdad y horneado cada mañana para mantener la frescura que se siente en cada mordisco.</p>
@@ -167,7 +167,7 @@
         </section>
     </main>
 
-    <?php include 'partials/footer.php'; ?>
+    <?php include __DIR__ . '/partials/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

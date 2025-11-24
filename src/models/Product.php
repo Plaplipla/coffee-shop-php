@@ -12,6 +12,11 @@ class Product {
         return $this->db->find('products', ['active' => true]);
     }
     
+    public function getAllForAdmin() {
+        // Retorna todos los productos sin filtrar por estado (para admin/empleado)
+        return $this->db->find('products', []);
+    }
+    
     public function findById($id) {
         return $this->db->findOne('products', ['_id' => new MongoDB\BSON\ObjectId($id)]);
     }
@@ -29,7 +34,6 @@ class Product {
             return false;
         }
 
-        // Remove immutable fields if present
         unset($data['_id']);
         unset($data['created_at']);
 

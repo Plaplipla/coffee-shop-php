@@ -128,7 +128,6 @@
                     <?php endforeach; ?>
                 </div>
 
-                <!-- Resumen del Carrito -->
                 <div class="col-md-4">
                     <div class="card sticky-top" style="top: 20px;">
                         <div class="card-body">

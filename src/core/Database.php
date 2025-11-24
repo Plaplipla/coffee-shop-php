@@ -63,8 +63,6 @@ class Database {
     
     public function update($collection, $filter, $update) {
         $bulk = new MongoDB\Driver\BulkWrite;
-        // Si el update ya contiene operadores como $set, usarlo directamente
-        // Si no, envolver en $set
         if (is_array($update) && (array_key_first($update) === '$set' || array_key_first($update) === '$push' || array_key_first($update) === '$inc')) {
             $bulk->update($filter, $update);
         } else {

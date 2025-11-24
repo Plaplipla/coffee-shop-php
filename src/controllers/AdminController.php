@@ -24,8 +24,42 @@ class AdminController {
     /* Dashboard principal del administrador */
     public function dashboard() {
         $metrics = $this->getGeneralMetrics();
+        $contactMessages = $this->getRecentContactMessages();
         
         require __DIR__ . '/../views/admin/dashboard.php';
+    }
+    
+    /* Obtener mensajes de contacto recientes */
+    private function getRecentContactMessages($limit = 10) {
+        $db = Database::getInstance();
+        $messages = $db->find('contactos', [], ['sort' => ['fecha' => -1], 'limit' => $limit]);
+        return $messages;
+    }
+    
+    /* Ver todos los mensajes de contacto */
+    public function messages() {
+        $db = Database::getInstance();
+        $allMessages = $db->find('contactos', [], ['sort' => ['fecha' => -1]]);
+        
+        require __DIR__ . '/../views/admin/messages.php';
+    }
+    
+    /* Marcar mensaje como leído */
+    public function markMessageRead() {
+        if (!isset($_GET['id'])) {
+            header('Location: /admin/messages');
+            exit;
+        }
+        
+        $db = Database::getInstance();
+        $db->update('contactos', 
+            ['_id' => new MongoDB\BSON\ObjectId($_GET['id'])], 
+            ['leido' => true]
+        );
+        
+        $_SESSION['success'] = 'Mensaje marcado como leído';
+        header('Location: /admin/messages');
+        exit;
     }
     
     /* Página de reportes detallados */

@@ -7,19 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        html, body {
-            height: 100%;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-        .order-tracking-container {
-            flex: 1;
-            padding: 2rem 1rem;
-        }
-    </style>
 </head>
 <body>
     <?php include __DIR__ . '/partials/header.php'; ?>
@@ -30,7 +17,6 @@
         </h1>
 
         <?php if (!isset($order) || $order === null): ?>
-            <!-- Formulario de búsqueda -->
             <div class="search-section">
                 <h3 class="mb-4">Ingresa tu número de orden para ver el estado</h3>
                 <form method="POST" action="/track-order">
@@ -54,13 +40,11 @@
                 <?php endif; ?>
             </div>
         <?php else: ?>
-            <!-- Información del pedido encontrado -->
             <div class="alert alert-success" role="alert">
                 <i class="bi bi-check-circle-fill"></i>
                 ¡Pedido encontrado! Aquí está el estado actual de tu orden.
             </div>
 
-            <!-- Estado del pedido (actualización automática) -->
             <div id="statusAlert" class="alert alert-info" role="alert">
                 <i class="bi bi-info-circle"></i>
                 <strong id="statusLabel">
@@ -87,7 +71,6 @@
                 </p>
             </div>
 
-            <!-- Timeline de estados -->
             <div class="status-timeline">
                 <div class="status-item <?php echo in_array($order->status, ['pending', 'preparing', 'ready', 'delivered']) ? 'completed' : ''; ?>" id="status-pending">
                     <div class="status-circle">
@@ -118,7 +101,6 @@
                 </div>
             </div>
 
-            <!-- Detalles del pedido -->
             <div class="order-details">
                 <h5 class="mb-3">
                     <i class="bi bi-info-circle"></i> Detalles del Pedido
@@ -234,7 +216,6 @@
                 </div>
                 <?php endif; ?>
 
-            <!-- Productos del pedido -->
             <div class="order-details mt-4">
                 <h5 class="mb-3">
                     <i class="bi bi-basket"></i> Productos
@@ -299,9 +280,6 @@
         const deliveryType = '<?php echo isset($order->delivery_type) ? htmlspecialchars($order->delivery_type) : 'delivery'; ?>';
         let lastStatus = '<?php echo isset($order->status) ? htmlspecialchars($order->status) : 'pending'; ?>';
 
-        console.log('✓ DOM Cargado - Iniciando polling para orden: ' + orderNumber);
-        console.log('Estado inicial: ' + lastStatus);
-
         // Mensajes según estado
         const statusLabels = {
             'pending': 'Estado del Pedido: Pendiente de Confirmación',
@@ -336,23 +314,14 @@
         };
 
         function updateStatusUI(newStatus) {
-            console.log('📝 Actualizando UI con nuevo estado: ' + newStatus);
-            
             const statusAlert = document.getElementById('statusAlert');
             const statusLabel = document.getElementById('statusLabel');
             const statusMessage = document.getElementById('statusMessage');
             
-            if (!statusAlert) {
-                console.warn('⚠️ No se encontró elemento #statusAlert');
-                return;
-            }
+            if (!statusAlert || !statusLabel || !statusMessage) return;
 
             const alertIcon = statusAlert.querySelector('i');
-            
-            if (!statusLabel || !statusMessage || !alertIcon) {
-                console.warn('⚠️ Falta algún elemento del DOM');
-                return;
-            }
+            if (!alertIcon) return;
 
             // Actualizar clase de alerta
             Object.values(alertClasses).forEach(cls => statusAlert.classList.remove(cls));
@@ -368,8 +337,6 @@
 
             // Actualizar timeline
             updateTimeline(newStatus);
-            
-            console.log('✅ UI actualizada correctamente');
         }
 
         function updateTimeline(newStatus) {
@@ -389,20 +356,13 @@
                     }
                 }
             });
-            
-            console.log('📊 Timeline actualizado');
         }
 
         function updateOrderStatus() {
-            if (!orderNumber) {
-                console.warn('⚠️ No hay número de orden para consultar');
-                return;
-            }
+            if (!orderNumber) return;
 
             const formData = new FormData();
             formData.append('order_number', orderNumber);
-
-            console.log('🔄 Consultando estado del servidor...');
 
             fetch('/track-order', {
                 method: 'POST',
@@ -413,7 +373,6 @@
                 return response.text();
             })
             .then(html => {
-                console.log('📦 Respuesta del servidor recibida');
                 
                 // Extraer el estado actual del HTML devuelto
                 const parser = new DOMParser();
@@ -425,7 +384,6 @@
                 
                 // Determinar el nuevo estado según qué elementos estén completados
                 if (statusItems.length >= 4) {
-                    // Buscar cuál es el índice más alto completado
                     for (let i = 3; i >= 0; i--) {
                         if (statusItems[i].classList.contains('completed')) {
                             if (i === 3) newStatus = 'delivered';
@@ -437,43 +395,29 @@
                     }
                 }
                 
-                console.log('🔍 Nuevo estado detectado: ' + newStatus);
-                
                 // Si el estado cambió, actualizar la interfaz sin recargar
                 if (newStatus !== lastStatus) {
-                    console.log('✅ Estado cambió de "' + lastStatus + '" a "' + newStatus + '"');
                     lastStatus = newStatus;
                     updateStatusUI(newStatus);
-                } else {
-                    console.log('⏳ Sin cambios en el estado');
                 }
             })
-            .catch(error => console.error('❌ Error actualizando estado:', error));
+            .catch(error => console.error('Error actualizando estado:', error));
         }
 
-        // Llamar inmediatamente al cargar
-        console.log('🚀 Primera consulta inmediata...');
         updateOrderStatus();
 
         // Actualizar cada 5 segundos
-        let pollInterval = setInterval(updateOrderStatus, 5000);
-        console.log('✓ Polling iniciado - Actualizando cada 5 segundos');
+        setInterval(updateOrderStatus, 5000);
 
         // También actualizar cuando la pestaña vuelve a ser visible
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden) {
-                console.log('📍 Pestaña visible - Actualizando inmediatamente');
                 updateOrderStatus();
-            } else {
-                console.log('⏸️ Pestaña oculta - Pausando polling');
             }
         });
     });
     
     <?php endif; ?>
     </script>
-
-    <?php include __DIR__ . '/partials/footer.php'; ?>
-
 </body>
 </html>

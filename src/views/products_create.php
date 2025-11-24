@@ -11,7 +11,7 @@
     <?php include __DIR__ . '/partials/header.php'; ?>
     <div class="container mt-4">
         <h1>Agregar Producto</h1>
-        <form method="POST" action="/products/store" novalidate>
+        <form method="POST" action="/products/store" novalidate class="mb-3">
             <div class="mb-3">
                 <label class="form-label">Nombre <span class="text-danger">*</span></label>
                 <input class="form-control" type="text" name="name" required minlength="3" maxlength="100" 
@@ -45,10 +45,10 @@
                 <small class="form-text text-muted">Solo números. Mínimo 0</small>
             </div>
             <div class="mb-3">
-                <label class="form-label">Imagen (ruta) <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="image" required minlength="5" maxlength="255"
-                    placeholder="Ej: images/products/latte.jpg">
-                <small class="form-text text-muted">Ruta del archivo de imagen. Mínimo 5 caracteres</small>
+                <label class="form-label">Imagen (URL) <span class="text-danger">*</span></label>
+                <input class="form-control" type="url" name="image" required minlength="5" maxlength="255"
+                    placeholder="Ej: https://i.postimg.cc/abc123/latte.png">
+                <small class="form-text text-muted">URL completa de la imagen. Ejemplo: https://i.postimg.cc/...</small>
             </div>
             <div class="mb-3">
                 <label class="form-label">Descripción <span class="text-danger">*</span></label>

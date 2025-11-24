@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <?php include 'partials/header.php'; ?>
+    <?php include __DIR__ . '/partials/header.php'; ?>
 
     <div class="container mt-4">
         <h1><i class="bi bi-credit-card"></i> Finalizar Compra</h1>
@@ -22,7 +22,6 @@
             </div>
         <?php endif; ?>
 
-        <!-- Mensaje de bienvenida con descuento para usuarios nuevos (solo mostrar si es primer pedido) -->
         <?php if (isset($_SESSION['user_email']) && isset($isFirstOrder) && $isFirstOrder): ?>
         <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
             <i class="bi bi-gift"></i>
@@ -99,7 +98,6 @@
                             <button type="submit" class="btn btn-success btn-lg w-100">
                                 <i class="bi bi-check-circle"></i> Confirmar Pedido
                             </button>
-                            <!-- Hidden fields para enviar descuento al servidor -->
                             <input type="hidden" id="discountCodeHidden" name="discount_code" value="">
                             <input type="hidden" id="discountPercentageHidden" name="discount_percentage" value="0">
                         </form>
@@ -123,17 +121,18 @@
 
                     function updateTotal() {
                         var cartTotalDisplay = document.getElementById('cartTotalDisplay');
+                        var subtotalDisplay = document.getElementById('subtotalDisplay');
                         var productSubtotal = parseFloat(cartTotalDisplay ? cartTotalDisplay.getAttribute('data-subtotal') : 0) || 0;
                         var deliveryFee = (deliveryRadio && deliveryRadio.checked) ? DELIVERY_FEE : 0;
                         
-                        // Descuento se aplica al subtotal (solo productos)
-                        var discountAmount = (productSubtotal * discountPercentage) / 100;
-                        // Total = Subtotal + Envío - Descuento
-                        var total = productSubtotal + deliveryFee - discountAmount;
+                        var subtotal = productSubtotal + deliveryFee;
                         
+                        var discountAmount = (productSubtotal * discountPercentage) / 100;
+                        var total = subtotal - discountAmount;
+                        
+                        if (subtotalDisplay) subtotalDisplay.textContent = formatCurrencyCLP(subtotal);
                         cartTotalDisplay.textContent = formatCurrencyCLP(total);
                         
-                        // Mostrar/ocultar descuento
                         var discountRow = document.getElementById('discountRow');
                         var discountAmountDisplay = document.getElementById('discountAmount');
                         if (discountPercentage > 0) {
@@ -176,8 +175,6 @@
 
                     if (deliveryRadio) deliveryRadio.addEventListener('change', updateDeliveryUI);
                     if (pickupRadio) pickupRadio.addEventListener('change', updateDeliveryUI);
-                    // Exponer métodos para que funciones externas (applyDiscount/removeDiscount) puedan
-                    // actualizar el estado del descuento y recalcular totales.
                     window.__checkout = window.__checkout || {};
                     window.__checkout.updateTotal = updateTotal;
                     window.__checkout.setDiscountPercentage = function(p) { discountPercentage = p; updateTotal(); };
@@ -185,7 +182,6 @@
                     updateDeliveryUI();
                 })();
 
-                // Variable desde servidor que indica si el usuario es elegible al descuento de primer pedido
                 var IS_FIRST_ORDER = <?php echo (isset($isFirstOrder) && $isFirstOrder) ? 'true' : 'false'; ?>;
 
                 (function(){
@@ -231,7 +227,6 @@
                             debounceTimer = setTimeout(function(){ checkEmailAjax(val); }, 500);
                         });
 
-                        // Ejecutar al cargar si hay valor
                         if (emailInput.value) checkEmailAjax(emailInput.value.trim());
                     }
                 })();
@@ -259,7 +254,6 @@
                         discountPercentage = 15;
                         isValid = true;
                     } else if (code !== '') {
-                        // Mostrar alerta de error
                         var alertHTML = '<div class="alert alert-warning alert-dismissible fade show" role="alert">' +
                             '<i class="bi bi-exclamation-triangle"></i> Código de descuento inválido' +
                             '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
@@ -269,7 +263,6 @@
                         return;
                     }
                     
-                    // Actualizar variable global en el scope anterior
                     var cartTotalDisplay = document.getElementById('cartTotalDisplay');
                     var productSubtotal = parseFloat(cartTotalDisplay ? cartTotalDisplay.getAttribute('data-subtotal') : 0) || 0;
                     var deliveryRadio = document.getElementById('deliveryTypeDelivery');
@@ -277,12 +270,9 @@
                     var DELIVERY_FEE = 3000;
                     
                     var deliveryFee = (deliveryRadio && deliveryRadio.checked) ? DELIVERY_FEE : 0;
-                    // Descuento se aplica al subtotal (solo productos)
                     var discountAmount = (productSubtotal * discountPercentage) / 100;
-                    // Total = Subtotal + Envío - Descuento
                     var total = productSubtotal + deliveryFee - discountAmount;
                     
-                    // Mostrar descuento
                     var discountRow = document.getElementById('discountRow');
                     var discountAmountDisplay = document.getElementById('discountAmount');
                     
@@ -291,18 +281,15 @@
                         discountAmountDisplay.textContent = '-$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(discountAmount);
                         cartTotalDisplay.textContent = '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
                         
-                        // Guardar el descuento en los campos ocultos del formulario para que el servidor lo reciba
                         var hiddenCode = document.getElementById('discountCodeHidden');
                         var hiddenPerc = document.getElementById('discountPercentageHidden');
                         if (hiddenCode) hiddenCode.value = code;
                         if (hiddenPerc) hiddenPerc.value = discountPercentage;
 
-                        // Actualizar también la variable usada por updateTotal() dentro del IIFE
                         if (window.__checkout && typeof window.__checkout.setDiscountPercentage === 'function') {
                             window.__checkout.setDiscountPercentage(discountPercentage);
                         }
                         
-                        // Mostrar alerta de éxito
                         var alertHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
                             '<i class="bi bi-check-circle"></i> <strong>¡Descuento aplicado!</strong> Ahorraste $' +
                             new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(discountAmount) +
@@ -372,7 +359,6 @@
                 }
                 </script>
             
-            <!-- Resumen del Pedido -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
@@ -409,9 +395,7 @@
                             $productTotal = floatval($cartTotal ?? 0);
                             $deliveryFee = 3000;
                             $initiallyDelivery = true;
-                            // Subtotal = solo productos
                             $subtotal = $productTotal;
-                            // Total inicial = subtotal + envío (sin descuento)
                             $deliveryToShow = $initiallyDelivery ? $deliveryFee : 0;
                             $initialTotal = $subtotal + $deliveryToShow;
                         ?>
@@ -431,7 +415,7 @@
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Subtotal:</span>
-                            <span>$<?php echo number_format($subtotal, 2); ?></span>
+                            <span id="subtotalDisplay">$<?php echo number_format($initialTotal, 2); ?></span>
                         </div>
                         <hr class="my-2">
                         <div class="d-flex justify-content-between mb-3">

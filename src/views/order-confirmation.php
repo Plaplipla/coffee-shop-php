@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <?php include 'partials/header.php'; ?>
+    <?php include __DIR__ . '/partials/header.php'; ?>
 
     <div class="container mt-5">
         <div class="row justify-content-center mb-4">
@@ -97,13 +97,18 @@
                         <?php
                             $orderTotal = floatval($orderData['total'] ?? 0);
                             $orderDelivery = floatval($orderData['delivery_fee'] ?? 0);
-                            $orderSubtotal = floatval($orderData['subtotal'] ?? 0);
+                            $orderProductsTotal = floatval($orderData['subtotal'] ?? 0);
                             $orderDiscount = floatval($orderData['discount_amount'] ?? 0);
                             $paymentMethod = $orderData['payment_method'] ?? 'card';
                             $discountCode = $orderData['discount_code'] ?? '';
+                            $orderSubtotal = $orderProductsTotal + $orderDelivery;
                         ?>
                         <div class="row">
                             <div class="col-md-6 offset-md-6">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Envío:</span>
+                                    <span>$<?php echo number_format($orderDelivery, 2); ?></span>
+                                </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Subtotal:</span>
                                     <span>$<?php echo number_format($orderSubtotal, 2); ?></span>
@@ -114,10 +119,6 @@
                                     <span class="text-success">-$<?php echo number_format($orderDiscount, 2); ?></span>
                                 </div>
                                 <?php endif; ?>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Envío:</span>
-                                    <span>$<?php echo number_format($orderDelivery, 2); ?></span>
-                                </div>
                                 <hr class="my-2">
                                 <div class="d-flex justify-content-between mb-3">
                                     <strong>Total:</strong>

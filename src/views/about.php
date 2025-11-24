@@ -10,10 +10,9 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <?php include 'partials/header.php'; ?>
+    <?php include __DIR__ . '/partials/header.php'; ?>
 
     <main>
-        <!-- Sección Hero con imagen -->
         <section class="py-5" style="background: linear-gradient(rgba(36, 36, 36, 0.7), rgba(36, 36, 36, 0.7)), url('/images/local.png') center/cover no-repeat;">
             <div class="container">
                 <div class="row align-items-center">
@@ -25,7 +24,6 @@
             </div>
         </section>
 
-        <!-- Misión y Visión -->
         <section class="py-5">
             <div class="container">
                 <div class="row">
@@ -33,27 +31,66 @@
                         <h2 class="mb-3 text-coffee">Nuestra Misión</h2>
                         <p>En Cafetería Aroma queremos ofrecerte más que una taza de café: buscamos que el café despierte los sentidos en un entorno auténtico, local. Nuestro café es tostado en la región y es de alta calidad. Apostamos por lo fresco, lo artesanal y el servicio profesional.</p>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Calidad premium</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Productos locales</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Recetas artesanales</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Excelente servicio</li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </span>
+                                Calidad premium
+                            </li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </span>
+                                Productos locales
+                            </li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </span>
+                                Recetas artesanales
+                            </li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </span>
+                                Excelente servicio
+                            </li>
                         </ul>
                     </div>
                     <div class="col-lg-6 mb-4">
                         <h2 class="mb-3 text-coffee">Nuestra Visión</h2>
                         <p>Ser la cafetería de referencia en la ciudad, reconocida por la calidad de nuestro café y nuestro compromiso de entregar experiencias acogedoras. Queremos inspirar a más personas a vivir el ritual del café a su propio ritmo, junto a amistades auténticas en torno al sabor de cada infusión.</p>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="bi bi-star-fill text-warning me-2"></i>Referente de calidad</li>
-                            <li class="mb-2"><i class="bi bi-star-fill text-warning me-2"></i>Experiencias memorables</li>
-                            <li class="mb-2"><i class="bi bi-star-fill text-warning me-2"></i>Comunidad auténtica</li>
-                            <li class="mb-2"><i class="bi bi-star-fill text-warning me-2"></i>Inspiración diaria</li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </span>
+                                Referente de calidad
+                            </li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </span>
+                                Experiencias memorables
+                            </li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </span>
+                                Comunidad auténtica
+                            </li>
+                            <li class="mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                </span>
+                                Inspiración diaria
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Promoción y Contacto -->
         <section class="py-5 bg-light">
             <div class="container">
                 <div class="text-center mb-5">
@@ -84,13 +121,12 @@
                     </div>
                 </div>
 
-                <div class="alert alert-info mt-4" role="alert">
+                <div class="mt-4 p-3 rounded-3" style="background-color: #d1ecf1; border-left: 4px solid #0dcaf0; color: #055160;">
                     <i class="bi bi-gift-fill me-2"></i><strong>Promoción exclusiva:</strong> Menciona <em>"Coffee Time"</em> en nuestras redes sociales, etiquétanos y obtén un <strong>10% de descuento</strong> en tu bebida favorita.
                 </div>
             </div>
         </section>
 
-        <!-- Nuestros Valores -->
         <section class="py-5" style="background: linear-gradient(135deg, #ECE0D1 0%, #D4A574 100%);">
             <div class="container">
                 <h2 class="text-center mb-5" style="color: var(--coffee-dark);">Nuestros Valores</h2>
@@ -134,7 +170,7 @@
         }
     </style>
 
-<?php include __DIR__ . '/partials/footer.php'; ?>
+    <?php include __DIR__ . '/partials/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

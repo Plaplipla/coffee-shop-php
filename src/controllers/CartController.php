@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/../models/Product.php';
+require_once __DIR__ . '/../models/Order.php';
 
 class CartController {
     private $productModel;
+    private $orderModel;
     
     public function __construct() {
         $this->productModel = new Product();
+        $this->orderModel = new Order();
     }
     
     public function add() {
@@ -83,9 +86,7 @@ class CartController {
         // Determinar si el usuario (si está logueado) es su primer pedido
         $isFirstOrder = true;
         if (isset($_SESSION['user_email'])) {
-            require_once __DIR__ . '/../models/Order.php';
-            $orderModel = new Order();
-            $existing = $orderModel->getByEmail($_SESSION['user_email']);
+            $existing = $this->orderModel->getByEmail($_SESSION['user_email']);
             $isFirstOrder = empty($existing);
         }
 
@@ -103,9 +104,6 @@ class CartController {
             }
 
             // GUARDAR PEDIDO REAL EN BASE DE DATOS
-            require_once __DIR__ . '/../models/Order.php';
-            $orderModel = new Order();
-            
             $deliveryType = $_POST['delivery_type'] ?? 'delivery';
             $deliveryAddress = $_POST['delivery_address'] ?? '';
             $deliveryFee = 0;
@@ -125,7 +123,7 @@ class CartController {
             // Validar y aplicar descuento: solo aplicar si el código y el porcentaje coinciden
             // y el cliente no tiene pedidos previos (primer pedido)
             if ($discountCode === 'WELCOME15' && $discountPercentage === 15) {
-                $existingOrders = $orderModel->getByEmail($customerEmail);
+                $existingOrders = $this->orderModel->getByEmail($customerEmail);
                 if (empty($existingOrders)) {
                     // Es primer pedido, aplicar descuento sobre el subtotal (solo productos)
                     $subtotal = $this->getSessionCartTotal();
@@ -136,13 +134,12 @@ class CartController {
                     $discountAmount = 0;
                 }
             } elseif (!empty($discountCode)) {
-                // Código inválido: ignorar
                 $discountCode = '';
                 $discountAmount = 0;
             }
 
             // Generar número de orden usando el método del modelo
-            $orderNumber = $orderModel->generateOrderNumber();
+            $orderNumber = $this->orderModel->generateOrderNumber();
 
             // Calcular subtotal y total finales
             $subtotal = $this->getSessionCartTotal();
@@ -166,7 +163,7 @@ class CartController {
                 'status' => 'pending'
             ];
             
-            $result = $orderModel->create($orderData);
+            $result = $this->orderModel->create($orderData);
             
             if ($result) {
             // Limpiar carrito después del pedido
@@ -211,9 +208,7 @@ class CartController {
             exit;
         }
 
-        require_once __DIR__ . '/../models/Order.php';
-        $orderModel = new Order();
-        $existing = $orderModel->getByEmail($email);
+        $existing = $this->orderModel->getByEmail($email);
 
         $eligible = empty($existing);
         echo json_encode(['ok' => true, 'eligible' => $eligible]);

@@ -17,12 +17,11 @@ class ProductsController {
             exit;
         }
 
-        $products = $this->productModel->getAll();
+        $products = $this->productModel->getAllForAdmin();
         require __DIR__ . '/../views/products.php';
     }
 
     public function create() {
-        // show creation form
         if (!isset($_SESSION['user_id']) || 
             (!in_array($_SESSION['user_role'] ?? '', ['empleado','trabajador','administrador']))) {
             $_SESSION['error'] = 'Acceso denegado.';
@@ -109,6 +108,37 @@ class ProductsController {
         ];
         $res = $this->productModel->update($id, $data);
         if ($res) $_SESSION['success'] = 'Producto actualizado'; else $_SESSION['error'] = 'Error al actualizar';
+        header('Location: /products'); exit;
+    }
+
+    public function toggleStatus() {
+        if (!isset($_SESSION['user_id']) || 
+            (!in_array($_SESSION['user_role'] ?? '', ['empleado','trabajador','administrador']))) {
+            $_SESSION['error'] = 'Acceso denegado.';
+            header('Location: /home'); exit;
+        }
+        $id = $_GET['id'] ?? null;
+        if (!$id) { header('Location: /products'); exit; }
+        
+        // Obtener el producto actual
+        $product = $this->productModel->getProductById($id);
+        if (!$product) {
+            $_SESSION['error'] = 'Producto no encontrado';
+            header('Location: /products'); exit;
+        }
+        
+        // Cambiar el estado activo
+        $currentActive = is_array($product) ? (!empty($product['active'])) : (!empty($product->active));
+        $newActive = !$currentActive;
+        
+        $res = $this->productModel->update($id, ['active' => $newActive]);
+        
+        if ($res) {
+            $_SESSION['success'] = $newActive ? 'Producto activado' : 'Producto desactivado';
+        } else {
+            $_SESSION['error'] = 'Error al cambiar el estado del producto';
+        }
+        
         header('Location: /products'); exit;
     }
 

@@ -116,7 +116,6 @@ class AuthController {
             return;
         }
         
-        // Verificar si el email ya existe
         $existingUser = $this->userModel->findByEmail($email);
         if ($existingUser) {
             echo json_encode(['success' => false, 'message' => 'Este email ya está registrado']);

@@ -10,16 +10,13 @@ class Cart {
 
     //Estos métodos se usarán solo cuando el usuario esté logueado
     public function migrateSessionToUser($sessionCart, $userId) {
-        // Migrar carrito de sesión a base de datos cuando el usuario haga login
         foreach ($sessionCart as $item) {
             $this->addToCart($userId, $item['product_id'], $item['quantity']);
         }
         return true;
     }
     
-    // Solo para usuarios logueados
     public function addToCart($userId, $productId, $quantity = 1) {
-        // Verificar si el producto ya está en el carrito
         $existingItem = $this->db->findOne('cart', [
             'user_id' => $userId,
             'product_id' => $productId

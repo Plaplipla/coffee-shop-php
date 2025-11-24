@@ -31,6 +31,7 @@
                             <th>Categoría</th>
                             <th>Precio</th>
                             <th>Stock</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -41,11 +42,12 @@
                             $stock = is_array($p) ? ($p['stock'] ?? 0) : ($p->stock ?? 0);
                             $id = is_array($p) ? ($p['_id'] ?? '') : ($p->_id ?? '');
                             $image = is_array($p) ? ($p['image'] ?? '') : ($p->image ?? '');
+                            $active = is_array($p) ? (!empty($p['active'])) : (!empty($p->active));
                         ?>
-                        <tr>
+                        <tr style="<?php echo !$active ? 'opacity: 0.5;' : ''; ?>">
                             <td style="width:80px;">
                                 <?php if ($image): ?>
-                                    <img src="/<?php echo htmlspecialchars($image); ?>" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                                    <img src="<?php echo htmlspecialchars($image); ?>" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($name); ?></td>
@@ -53,8 +55,19 @@
                             <td>$<?php echo number_format(floatval($price),2); ?></td>
                             <td><?php echo intval($stock); ?></td>
                             <td>
-                                <a href="/products/edit?id=<?php echo urlencode((string)$id); ?>" class="btn btn-sm btn-outline-primary">Editar</a>
-                                <a href="/products/delete?id=<?php echo urlencode((string)$id); ?>" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                                <?php if ($active): ?>
+                                    <span class="badge bg-success">Activo</span>
+                                <?php else: ?>
+                                    <span class="badge bg-secondary">Inactivo</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <a href="/products/edit?id=<?php echo urlencode((string)$id); ?>" class="btn btn-sm btn-primary">Editar</a>
+                                <?php if ($active): ?>
+                                    <a href="/products/toggle-status?id=<?php echo urlencode((string)$id); ?>" class="btn btn-sm btn-warning">Desactivar</a>
+                                <?php else: ?>
+                                    <a href="/products/toggle-status?id=<?php echo urlencode((string)$id); ?>" class="btn btn-sm btn-success">Activar</a>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
