@@ -271,4 +271,4 @@ docker-compose down && docker-compose up -d --build
 
 ---
 
-**Última actualización:** 19 de octubre de 2025
+**Última actualización:** 23 de noviembre de 2025

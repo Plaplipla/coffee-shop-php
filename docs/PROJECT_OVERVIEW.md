@@ -26,7 +26,8 @@ coffee-shop/
 │   ├── README.md               # Documentación principal
 │   ├── QUICKSTART.md           # Inicio rápido
 │   ├── ARCHITECTURE.md         # Arquitectura técnica
-│   └── TROUBLESHOOTING.md      # Solución de problemas
+│   ├── BUSINESS_FLOW.md        # Flujo de negocio
+│   └── DATABASE.md             # Modelo de base de datos
 │
 ├── 🛠️ Scripts
 │   ├── start.sh                # Iniciar (Linux/Mac)
@@ -298,9 +299,10 @@ Este proyecto es ideal para:
 
 | Problema | Solución |
 |----------|----------|
-| 🐛 Bug | Ver `TROUBLESHOOTING.md` |
 | 📖 Documentación | Ver `README.md` |
 | 🏗️ Arquitectura | Ver `ARCHITECTURE.md` |
+| 📊 Flujos de negocio | Ver `BUSINESS_FLOW.md` |
+| 🗄️ Base de datos | Ver `DATABASE.md` |
 | 🚀 Inicio rápido | Ver `QUICKSTART.md` |
 
 ---

@@ -8,19 +8,13 @@ Bienvenido al proyecto Coffee Shop E-commerce. Esta es tu guía para navegar tod
 
 ## 🚀 Para Empezar
 
-### 1. **[SUMMARY.md](SUMMARY.md)** ⭐ COMIENZA AQUÍ
-- 📋 Resumen ejecutivo del proyecto
-- ✅ Lo que se ha implementado
-- 📊 Estadísticas y métricas
-- 🎯 Estado actual
-
-### 2. **[QUICKSTART.md](QUICKSTART.md)** 🏃‍♂️ INICIO RÁPIDO
+### 1. **[QUICKSTART.md](QUICKSTART.md)** 🏃‍♂️ INICIO RÁPIDO
 - 🚀 3 pasos para levantar el proyecto
 - 👥 Usuarios de prueba
 - 🔥 Cómo funciona el hot-reload
 - 🛑 Cómo detener el proyecto
 
-### 3. **[../README.md](../README.md)** 📖 DOCUMENTACIÓN PRINCIPAL
+### 2. **[../README.md](../README.md)** 📖 DOCUMENTACIÓN PRINCIPAL
 - 🌟 Características del proyecto
 - 📁 Estructura del proyecto
 - 🛠️ Instalación completa
@@ -31,15 +25,7 @@ Bienvenido al proyecto Coffee Shop E-commerce. Esta es tu guía para navegar tod
 
 ## 🔍 Para Entender el Proyecto
 
-### 4. **[ARCHITECTURE.md](ARCHITECTURE.md)** 🏗️ ARQUITECTURA
-- 📐 Patrón MVC explicado
-- 🎯 Flujo de la aplicación
-- 🗄️ Estructura de base de datos
-- 🔄 Cómo funciona el hot-reload
-- 🛣️ Rutas disponibles
-- 🔒 Sistema de seguridad
-
-### 5. **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** 📊 VISIÓN GENERAL
+### 3. **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** 📊 VISIÓN GENERAL
 - 📂 Estructura visual
 - 🎨 Capturas conceptuales
 - 📊 Datos de ejemplo
@@ -47,11 +33,36 @@ Bienvenido al proyecto Coffee Shop E-commerce. Esta es tu guía para navegar tod
 - 📈 Métricas del proyecto
 - 🎓 Casos de uso
 
+### 4. **[ARCHITECTURE.md](ARCHITECTURE.md)** 🏗️ ARQUITECTURA TÉCNICA
+- 📐 Patrón MVC explicado
+- 🎯 Flujo de la aplicación
+- 🔄 Cómo funciona el hot-reload
+- 🛣️ Rutas disponibles
+- 🔒 Sistema de seguridad
+- 🚀 Optimizaciones implementadas
+
+### 5. **[BUSINESS_FLOW.md](BUSINESS_FLOW.md)** 📊 FLUJO DE NEGOCIO
+- 👥 Roles de usuario (cliente, empleado, admin)
+- 🛍️ Flujo completo del cliente
+- 👨‍🍳 Flujo del empleado
+- 👨‍💼 Flujo del administrador
+- 🔄 Ciclo de vida del pedido
+- 💰 Sistema de descuentos
+- 📦 Gestión de productos
+
+### 6. **[DATABASE.md](DATABASE.md)** 🗄️ BASE DE DATOS
+- 📊 Modelo de datos con Mermaid
+- 📦 4 colecciones detalladas
+- 🔍 Índices y optimización
+- 🔗 Relaciones entre colecciones
+- 📝 Consultas comunes
+- 🔐 Seguridad de datos
+
 ---
 
 ## 🛠️ Para Desarrollar
 
-### 6. **[COMMANDS.md](COMMANDS.md)** ⌨️ COMANDOS
+### 7. **[COMMANDS.md](COMMANDS.md)** ⌨️ COMANDOS
 - 🚀 Comandos básicos Docker
 - 📊 Monitoreo y logs
 - 🗄️ Comandos MongoDB
@@ -61,7 +72,7 @@ Bienvenido al proyecto Coffee Shop E-commerce. Esta es tu guía para navegar tod
 - 📦 Backup y restore
 - ⌨️ Aliases útiles
 
-### 7. **Scripts de Inicio**
+### 8. **Scripts de Inicio**
 - **[start.sh](start.sh)** - Script para Linux/Mac
 - **[start.bat](start.bat)** - Script para Windows
 - **[init-db.js](init-db.js)** - Inicializar base de datos
@@ -70,7 +81,7 @@ Bienvenido al proyecto Coffee Shop E-commerce. Esta es tu guía para navegar tod
 
 ## ✅ Para Verificar
 
-### 8. **[CHECKLIST.md](CHECKLIST.md)** ✔️ LISTA DE VERIFICACIÓN
+### 9. **[CHECKLIST.md](CHECKLIST.md)** ✔️ LISTA DE VERIFICACIÓN
 - 🔍 Checklist de instalación
 - 🧪 Tests de autenticación
 - 🎨 Verificación visual
@@ -78,16 +89,10 @@ Bienvenido al proyecto Coffee Shop E-commerce. Esta es tu guía para navegar tod
 - 🐛 Errores comunes
 - ✅ Verificación final
 
----
-
-## 🆘 Para Resolver Problemas
-
-### 9. **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** 🔧 SOLUCIÓN DE PROBLEMAS
-- 🚨 Problemas comunes y soluciones
-- 📊 Comandos de diagnóstico
-- 🆘 Reseteo completo
-- 🐛 Modo debug
-- 📞 Cómo reportar problemas
+### 10. **[IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md)** 📋 CHECKLIST IMPLEMENTACIÓN
+- ✅ Estado de implementación de features
+- 🔄 Progreso del proyecto
+- 📝 Tareas completadas y pendientes
 
 ---
 
@@ -135,28 +140,30 @@ src/
 ## 🎯 Guías Según tu Objetivo
 
 ### 🆕 Soy nuevo, ¿por dónde empiezo?
-1. Lee **[SUMMARY.md](SUMMARY.md)** para entender qué es el proyecto
+1. Lee **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** para entender qué es el proyecto
 2. Sigue **[QUICKSTART.md](QUICKSTART.md)** para levantarlo
 3. Usa **[CHECKLIST.md](CHECKLIST.md)** para verificar que funciona
 
 ### 🔨 Quiero desarrollar features nuevas
-1. Lee **[ARCHITECTURE.md](ARCHITECTURE.md)** para entender la estructura
-2. Usa **[COMMANDS.md](COMMANDS.md)** para comandos útiles
-3. Edita archivos en `src/` (hot-reload activo)
+1. Lee **[ARCHITECTURE.md](ARCHITECTURE.md)** para entender la estructura técnica
+2. Lee **[BUSINESS_FLOW.md](BUSINESS_FLOW.md)** para entender los flujos
+3. Consulta **[DATABASE.md](DATABASE.md)** para el modelo de datos
+4. Usa **[COMMANDS.md](COMMANDS.md)** para comandos útiles
+5. Edita archivos en `src/` (hot-reload activo)
 
-### 🐛 Tengo un problema
-1. Revisa **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** primero
-2. Verifica con **[CHECKLIST.md](CHECKLIST.md)**
-3. Usa comandos de diagnóstico de **[COMMANDS.md](COMMANDS.md)**
-
-### 📚 Quiero entender cómo funciona todo
-1. Lee **[ARCHITECTURE.md](ARCHITECTURE.md)** para la arquitectura
-2. Lee **[README.md](README.md)** para los detalles
+### 📊 Quiero entender el negocio
+1. Lee **[BUSINESS_FLOW.md](BUSINESS_FLOW.md)** para roles, flujos y reglas
+2. Consulta **[DATABASE.md](DATABASE.md)** para ver qué se almacena
 3. Revisa **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** para la visión completa
+
+### 🗄️ Necesito trabajar con la base de datos
+1. Lee **[DATABASE.md](DATABASE.md)** para el modelo completo
+2. Usa **[COMMANDS.md](COMMANDS.md)** sección MongoDB
+3. Consulta **[ARCHITECTURE.md](ARCHITECTURE.md)** para patrones de acceso
 
 ### 🚀 Quiero ponerlo en producción
 1. Lee la sección de seguridad en **[ARCHITECTURE.md](ARCHITECTURE.md)**
-2. Revisa las mejores prácticas en **[README.md](README.md)**
+2. Revisa las mejores prácticas en **[README.md](../README.md)**
 3. Usa **[COMMANDS.md](COMMANDS.md)** para backup y monitoreo
 
 ---
@@ -166,13 +173,13 @@ src/
 | Necesito... | Voy a... |
 |-------------|----------|
 | Empezar desde cero | [QUICKSTART.md](QUICKSTART.md) |
-| Entender el proyecto | [SUMMARY.md](SUMMARY.md) |
+| Entender el proyecto | [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) |
 | Ver la arquitectura | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| Resolver un problema | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) |
+| Entender flujos de negocio | [BUSINESS_FLOW.md](BUSINESS_FLOW.md) |
+| Ver modelo de base de datos | [DATABASE.md](DATABASE.md) |
 | Comandos útiles | [COMMANDS.md](COMMANDS.md) |
 | Verificar instalación | [CHECKLIST.md](CHECKLIST.md) |
-| Documentación completa | [README.md](README.md) |
-| Visión general | [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) |
+| Documentación completa | [../README.md](../README.md) |
 
 ---
 
@@ -208,38 +215,42 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 ## 📈 Nivel de Prioridad de Lectura
 
 ### 🔴 Prioridad Alta (Leer primero)
-1. [SUMMARY.md](SUMMARY.md)
-2. [QUICKSTART.md](QUICKSTART.md)
+1. [QUICKSTART.md](QUICKSTART.md)
+2. [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)
 3. [CHECKLIST.md](CHECKLIST.md)
 
-### 🟡 Prioridad Media (Leer después)
-4. [README.md](README.md)
-5. [ARCHITECTURE.md](ARCHITECTURE.md)
-6. [COMMANDS.md](COMMANDS.md)
+### 🟡 Prioridad Media (Desarrolladores)
+4. [ARCHITECTURE.md](ARCHITECTURE.md)
+5. [BUSINESS_FLOW.md](BUSINESS_FLOW.md)
+6. [DATABASE.md](DATABASE.md)
+7. [COMMANDS.md](COMMANDS.md)
 
-### 🟢 Prioridad Baja (Lectura opcional)
-7. [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)
-8. [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+### 🟢 Prioridad Baja (Referencia)
+8. [../README.md](../README.md)
+9. [IMPLEMENTATION_CHECKLIST.md](IMPLEMENTATION_CHECKLIST.md)
 
 ---
 
 ## 🎨 Documentos por Tipo
 
-### 📖 Documentación
-- README.md
-- ARCHITECTURE.md
+### 📖 Documentación General
+- ../README.md
 - PROJECT_OVERVIEW.md
 
+### 🏗️ Arquitectura y Diseño
+- ARCHITECTURE.md
+- BUSINESS_FLOW.md
+- DATABASE.md
+
 ### 🚀 Guías de Inicio
-- SUMMARY.md
 - QUICKSTART.md
 
 ### 🛠️ Referencia Técnica
 - COMMANDS.md
-- TROUBLESHOOTING.md
 
 ### ✅ Verificación
 - CHECKLIST.md
+- IMPLEMENTATION_CHECKLIST.md
 
 ### 📜 Scripts
 - start.sh
@@ -268,13 +279,22 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 → [COMMANDS.md](COMMANDS.md) sección "Reiniciar Base de Datos"
 
 **¿Por qué no funciona el login?**
-→ [TROUBLESHOOTING.md](TROUBLESHOOTING.md) sección "Login no funciona"
+→ [CHECKLIST.md](CHECKLIST.md) sección "Checklist de Errores Comunes"
 
 **¿Cómo verificar que todo funciona?**
 → [CHECKLIST.md](CHECKLIST.md) todas las secciones
 
 **¿Qué es el hot-reload?**
 → [ARCHITECTURE.md](ARCHITECTURE.md) sección "Hot-Reload"
+
+**¿Cómo funciona el flujo de compra?**
+→ [BUSINESS_FLOW.md](BUSINESS_FLOW.md) sección "Flujo del Cliente"
+
+**¿Qué se almacena en la base de datos?**
+→ [DATABASE.md](DATABASE.md) sección "Colecciones"
+
+**¿Cómo funcionan los roles?**
+→ [BUSINESS_FLOW.md](BUSINESS_FLOW.md) sección "Roles de Usuario"
 
 ---
 
@@ -283,8 +303,10 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 1. **Ctrl + F** para buscar dentro de un documento
 2. Los enlaces internos te llevan directamente a la sección
 3. Cada documento tiene un propósito específico
-4. Empieza por SUMMARY.md para el panorama general
+4. Empieza por PROJECT_OVERVIEW.md para el panorama general
 5. COMMANDS.md es tu referencia rápida constante
+6. BUSINESS_FLOW.md explica todo el negocio con diagramas
+7. DATABASE.md incluye modelo Mermaid completo
 
 ---
 
@@ -293,8 +315,8 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 1. **Busca** en este índice tu necesidad
 2. **Ve** al documento correspondiente
 3. **Usa** Ctrl + F para buscar palabras clave
-4. **Revisa** [TROUBLESHOOTING.md](TROUBLESHOOTING.md) si hay problemas
-5. **Consulta** [COMMANDS.md](COMMANDS.md) para comandos específicos
+4. **Consulta** [COMMANDS.md](COMMANDS.md) para comandos específicos
+5. **Revisa** [CHECKLIST.md](CHECKLIST.md) para verificar el setup
 
 ---
 
@@ -323,4 +345,4 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 
 **📚 Este índice se actualiza automáticamente con el proyecto**
 
-*Última actualización: 19 de octubre de 2025*
+*Última actualización: 23 de noviembre de 2025*
