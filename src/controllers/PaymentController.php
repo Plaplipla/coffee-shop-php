@@ -42,6 +42,7 @@ class PaymentController {
         $orderData = $_SESSION['pending_order'];
         
         // Preparar line items para Stripe
+        // IMPORTANTE: CLP no tiene decimales, así que unit_amount se usa directamente en pesos
         $lineItems = [];
         foreach ($orderData['items'] as $item) {
             $lineItems[] = [
@@ -51,7 +52,7 @@ class PaymentController {
                         'name' => $item['name'],
                         'description' => $item['description'] ?? '',
                     ],
-                    'unit_amount' => intval($item['price'] * 100), // Stripe usa centavos
+                    'unit_amount' => intval($item['price']), // CLP: valor directo sin multiplicación
                 ],
                 'quantity' => $item['quantity'],
             ];
@@ -65,7 +66,7 @@ class PaymentController {
                     'product_data' => [
                         'name' => 'Envío a domicilio',
                     ],
-                    'unit_amount' => intval($orderData['delivery_fee'] * 100),
+                    'unit_amount' => intval($orderData['delivery_fee']), // CLP: sin multiplicación
                 ],
                 'quantity' => 1,
             ];
@@ -162,6 +163,7 @@ class PaymentController {
                     // Limpiar el carrito y datos pendientes
                     unset($_SESSION['pending_order']);
                     unset($_SESSION['stripe_session_id']);
+                    $_SESSION['cart'] = []; // Vaciar carrito después del pago exitoso
                     
                     // Guardar datos para mostrar en confirmación
                     $_SESSION['order_data'] = $orderData;
@@ -295,8 +297,8 @@ class PaymentController {
      * Crear cupón en Stripe para descuentos
      */
     private function createStripeCoupon($code, $amount) {
-        // Convertir a centavos
-        $amountOff = intval($amount * 100);
+        // CLP: amount_off se usa directamente en pesos, sin multiplicación
+        $amountOff = intval($amount);
         
         $couponData = [
             'id' => strtoupper($code) . '_' . time(),

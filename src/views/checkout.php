@@ -127,7 +127,7 @@
                     var discountPercentage = 0;
 
                     function formatCurrencyCLP(value) {
-                        return '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+                        return '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
                     }
 
                     function updateTotal() {
@@ -289,8 +289,8 @@
                     
                     if (discountPercentage > 0) {
                         discountRow.style.display = '';
-                        discountAmountDisplay.textContent = '-$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(discountAmount);
-                        cartTotalDisplay.textContent = '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+                        discountAmountDisplay.textContent = '-$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(discountAmount);
+                        cartTotalDisplay.textContent = '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(total);
                         
                         var hiddenCode = document.getElementById('discountCodeHidden');
                         var hiddenPerc = document.getElementById('discountPercentageHidden');
@@ -303,7 +303,7 @@
                         
                         var alertHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
                             '<i class="bi bi-check-circle"></i> <strong>¡Descuento aplicado!</strong> Ahorraste $' +
-                            new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(discountAmount) +
+                            new Intl.NumberFormat('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(discountAmount) +
                             '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
                             '</div>';
                         discountCodeInput.parentElement.parentElement.insertAdjacentHTML('beforebegin', alertHTML);
@@ -335,7 +335,7 @@
                     var applyBtn = document.getElementById('applyDiscountBtn');
 
                     // Limpiar valores visibles
-                    if (discountAmountDisplay) discountAmountDisplay.textContent = '-$0,00';
+                    if (discountAmountDisplay) discountAmountDisplay.textContent = '-$0';
                     if (discountRow) discountRow.style.display = 'none';
 
                     // Limpiar campos ocultos
@@ -365,7 +365,7 @@
                         var deliveryRadio = document.getElementById('deliveryTypeDelivery');
                         var deliveryFee = (deliveryRadio && deliveryRadio.checked) ? 3000 : 0;
                         var total = productSubtotal + deliveryFee;
-                        if (cartTotalDisplay) cartTotalDisplay.textContent = '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(total);
+                        if (cartTotalDisplay) cartTotalDisplay.textContent = '$' + new Intl.NumberFormat('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(total);
                     }
                 }
                 </script>
@@ -382,7 +382,7 @@
                                 <?php echo $item['name']; ?> 
                                 <small class="text-muted">x<?php echo $item['quantity']; ?></small>
                             </span>
-                            <span>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></span>
+                            <span>$<?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?></span>
                         </div>
                         <?php endforeach; ?>
                         
@@ -414,7 +414,7 @@
                         <div id="discountRow" class="d-flex justify-content-between mb-2 align-items-center" style="display:none;">
                             <div>
                                 <span>Descuento:</span>
-                                <span id="discountAmount" class="text-success">-$0,00</span>
+                                <span id="discountAmount" class="text-success">-$0</span>
                             </div>
                             <div>
                                 <button type="button" id="removeDiscountBtn" class="btn btn-sm btn-outline-secondary" onclick="removeDiscount()">Quitar</button>
@@ -422,16 +422,16 @@
                         </div>
                         <div id="deliveryFeeRow" class="d-flex justify-content-between mb-2 <?php echo $initiallyDelivery ? '' : 'd-none'; ?>">
                             <span>Envío:</span>
-                            <span id="deliveryFeeAmount" class="text-muted"><?php echo '$' . number_format($initiallyDelivery ? $deliveryFee : 0, 2); ?></span>
+                            <span id="deliveryFeeAmount" class="text-muted"><?php echo '$' . number_format($initiallyDelivery ? $deliveryFee : 0, 0, ',', '.'); ?></span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Subtotal:</span>
-                            <span id="subtotalDisplay">$<?php echo number_format($initialTotal, 2); ?></span>
+                            <span id="subtotalDisplay">$<?php echo number_format($initialTotal, 0, ',', '.'); ?></span>
                         </div>
                         <hr class="my-2">
                         <div class="d-flex justify-content-between mb-3">
                             <strong>Total:</strong>
-                            <strong id="cartTotalDisplay" class="h5 text-success" data-subtotal="<?php echo $subtotal; ?>"><?php echo '$' . number_format($initialTotal, 2); ?></strong>
+                            <strong id="cartTotalDisplay" class="h5 text-success" data-subtotal="<?php echo $subtotal; ?>\"><?php echo '$' . number_format($initialTotal, 0, ',', '.'); ?></strong>
                         </div>
                         
                         <?php if (!isset($_SESSION['user_id'])): ?>

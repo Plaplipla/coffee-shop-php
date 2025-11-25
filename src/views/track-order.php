@@ -128,7 +128,7 @@
 
                 <div class="detail-row">
                     <span class="detail-label">Total:</span>
-                    <span class="detail-value">$<?php echo number_format($order->total, 2); ?></span>
+                    <span class="detail-value">$<?php echo number_format($order->total, 0, ',', '.'); ?></span>
                 </div>
 
                 <div class="detail-row">
@@ -146,7 +146,7 @@
 
                     <div class="detail-row">
                         <span class="detail-label">Costo de Envío:</span>
-                        <span class="detail-value">$<?php echo number_format($order->delivery_fee ?? 0, 2); ?></span>
+                        <span class="detail-value">$<?php echo number_format($order->delivery_fee ?? 0, 0, ',', '.'); ?></span>
                     </div>
                 <?php endif; ?>
 
@@ -211,7 +211,7 @@
                     <span class="detail-label">Código de Descuento:</span>
                     <span class="detail-value">
                         <?php echo htmlspecialchars($order->discount_code ?? '-'); ?> 
-                        <span class="text-success">-$<?php echo number_format($order->discount_amount ?? 0, 2); ?></span>
+                        <span class="text-success">-$<?php echo number_format($order->discount_amount ?? 0, 0, ',', '.'); ?></span>
                     </span>
                 </div>
                 <?php endif; ?>
@@ -253,8 +253,8 @@
                             <tr>
                                 <td><?php echo htmlspecialchars($itemName); ?></td>
                                 <td class="text-center"><?php echo $itemQty; ?></td>
-                                <td class="text-end">$<?php echo number_format($itemPrice, 2); ?></td>
-                                <td class="text-end">$<?php echo number_format($itemPrice * $itemQty, 2); ?></td>
+                                <td class="text-end">$<?php echo number_format($itemPrice, 0, ',', '.'); ?></td>
+                                <td class="text-end">$<?php echo number_format($itemPrice * $itemQty, 0, ',', '.'); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

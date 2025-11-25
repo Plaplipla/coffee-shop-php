@@ -139,7 +139,7 @@
                             </div>
                             <div class="d-flex justify-content-between mb-3">
                                 <strong>Total:</strong>
-                                <strong class="h5 text-success">$<?php echo number_format($cartTotal, 2); ?></strong>
+                                <strong class="h5 text-success">$<?php echo number_format($cartTotal, 0, ',', '.'); ?></strong>
                             </div>
                             
                             <div class="d-grid gap-2">

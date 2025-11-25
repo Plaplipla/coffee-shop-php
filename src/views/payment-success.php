@@ -71,21 +71,21 @@
                                 <?php foreach ($_SESSION['order_data']['items'] as $item): ?>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span><?php echo htmlspecialchars($item['name']); ?> x<?php echo $item['quantity']; ?></span>
-                                    <span>$<?php echo number_format($item['price'] * $item['quantity'], 2); ?></span>
+                                    <span>$<?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?></span>
                                 </div>
                                 <?php endforeach; ?>
                                 
                                 <?php if ($_SESSION['order_data']['delivery_fee'] > 0): ?>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Envío</span>
-                                    <span>$<?php echo number_format($_SESSION['order_data']['delivery_fee'], 2); ?></span>
+                                    <span>$<?php echo number_format($_SESSION['order_data']['delivery_fee'], 0, ',', '.'); ?></span>
                                 </div>
                                 <?php endif; ?>
                                 
                                 <?php if (isset($_SESSION['order_data']['discount_amount']) && $_SESSION['order_data']['discount_amount'] > 0): ?>
                                 <div class="d-flex justify-content-between mb-2 text-success">
                                     <span>Descuento (<?php echo htmlspecialchars($_SESSION['order_data']['discount_code']); ?>)</span>
-                                    <span>-$<?php echo number_format($_SESSION['order_data']['discount_amount'], 2); ?></span>
+                                    <span>-$<?php echo number_format($_SESSION['order_data']['discount_amount'], 0, ',', '.'); ?></span>
                                 </div>
                                 <?php endif; ?>
                                 
@@ -93,7 +93,7 @@
                                 
                                 <div class="d-flex justify-content-between">
                                     <strong class="h5">Total Pagado:</strong>
-                                    <strong class="h5 text-success">$<?php echo number_format($_SESSION['order_data']['total'], 2); ?></strong>
+                                    <strong class="h5 text-success">$<?php echo number_format($_SESSION['order_data']['total'], 0, ',', '.'); ?></strong>
                                 </div>
                             </div>
                         </div>

@@ -87,8 +87,8 @@
                                 <tr>
                                     <td><?php echo htmlspecialchars($item['name'] ?? ''); ?></td>
                                     <td class="text-center"><?php echo $item['quantity'] ?? 1; ?></td>
-                                    <td class="text-end">$<?php echo number_format($item['price'] ?? 0, 2); ?></td>
-                                    <td class="text-end">$<?php echo number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 2); ?></td>
+                                    <td class="text-end">$<?php echo number_format($item['price'] ?? 0, 0, ',', '.'); ?></td>
+                                    <td class="text-end">$<?php echo number_format(($item['price'] ?? 0) * ($item['quantity'] ?? 1), 0, ',', '.'); ?></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -107,22 +107,22 @@
                             <div class="col-md-6 offset-md-6">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Envío:</span>
-                                    <span>$<?php echo number_format($orderDelivery, 2); ?></span>
+                                    <span>$<?php echo number_format($orderDelivery, 0, ',', '.'); ?></span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Subtotal:</span>
-                                    <span>$<?php echo number_format($orderSubtotal, 2); ?></span>
+                                    <span>$<?php echo number_format($orderSubtotal, 0, ',', '.'); ?></span>
                                 </div>
                                 <?php if ($orderDiscount > 0): ?>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Descuento <?php echo htmlspecialchars($discountCode); ?>:</span>
-                                    <span class="text-success">-$<?php echo number_format($orderDiscount, 2); ?></span>
+                                    <span class="text-success">-$<?php echo number_format($orderDiscount, 0, ',', '.'); ?></span>
                                 </div>
                                 <?php endif; ?>
                                 <hr class="my-2">
                                 <div class="d-flex justify-content-between mb-3">
                                     <strong>Total:</strong>
-                                    <strong class="text-success h5">$<?php echo number_format($orderTotal, 2); ?></strong>
+                                    <strong class="text-success h5">$<?php echo number_format($orderTotal, 0, ',', '.'); ?></strong>
                                 </div>
                             </div>
                         </div>

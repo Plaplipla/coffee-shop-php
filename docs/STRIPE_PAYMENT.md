@@ -10,6 +10,27 @@ La pasarela de pago Stripe ha sido integrada exitosamente. Los clientes pueden e
 
 ---
 
+## ⚠️ IMPORTANTE: Moneda CLP
+
+**Actualización 24 Noviembre 2025:**
+
+Stripe maneja CLP (Peso Chileno) **sin decimales** (a diferencia de USD que usa centavos).
+
+**Correcciones Realizadas:**
+- ✅ **PaymentController.php** - `unit_amount` sin multiplicación por 100
+- ✅ **checkout.php** - Formato de números sin decimales (0 dígitos)
+- ✅ **cart.php** - Totales mostrados como números enteros en CLP
+
+**Ejemplo Correcto:**
+```
+Producto: $15,000 CLP → Stripe recibe: 15000 (sin multiplicación)
+Envío:    $3,000 CLP  → Stripe recibe: 3000
+```
+
+⚠️ **Si ves que Stripe está cobrando 100x más**, es porque aún tiene los valores antiguo. **Verifica que estés usando la versión actualizada del código.**
+
+---
+
 ## 🚀 Configuración Rápida (5 minutos)
 
 ### Paso 1: Crear Cuenta en Stripe

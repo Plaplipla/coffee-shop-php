@@ -52,7 +52,7 @@
                             </td>
                             <td><?php echo htmlspecialchars($name); ?></td>
                             <td><?php echo htmlspecialchars(is_array($p) ? ($p['category'] ?? '') : ($p->category ?? '')); ?></td>
-                            <td>$<?php echo number_format(floatval($price),2); ?></td>
+                            <td>$<?php echo number_format(floatval($price), 0, ',', '.'); ?></td>
                             <td><?php echo intval($stock); ?></td>
                             <td>
                                 <?php if ($active): ?>
