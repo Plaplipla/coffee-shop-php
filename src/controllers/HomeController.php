@@ -17,15 +17,16 @@ class HomeController {
     }
     
     public function orders() {
-        // Historial de pedidos del cliente autenticado
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'cliente') {
-            $_SESSION['error'] = 'Acceso denegado. Debes estar registrado como cliente.';
-            header('Location: /home');
-            exit;
-        }
-        
+        // Historial de pedidos - accesible para clientes registrados e invitados
         $orderModel = new Order();
-        $userOrders = $orderModel->getByEmail($_SESSION['user_email']);
+        
+        // Si el usuario está logueado, mostrar sus pedidos
+        // Si es invitado, mostrar pedidos según el email de sesión (si existe)
+        if (isset($_SESSION['user_email'])) {
+            $userOrders = $orderModel->getByEmail($_SESSION['user_email']);
+        } else {
+            $userOrders = [];
+        }
         
         include __DIR__ . '/../views/order-history.php';
     }

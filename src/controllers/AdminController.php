@@ -78,6 +78,7 @@ class AdminController {
             $comparisonData = $this->generateComparisonData($period, $comparison, $reports);
         }
         
+        // Pasar variables a la vista
         require __DIR__ . '/../views/admin/reports.php';
     }
     

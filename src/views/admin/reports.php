@@ -22,17 +22,20 @@
         <!-- Selector de Período y Comparación -->
         <div class="row mb-4">
             <div class="col-md-8">
+                <label style="color: #8B4513; font-weight: 600; margin-bottom: 12px; display: block;">
+                    <i class="bi bi-calendar-check"></i> Seleccionar Período:
+                </label>
                 <div class="period-selector">
-                    <a href="/admin/reports?period=week&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'week') ? 'active' : ''; ?>">
+                    <a href="/admin/reports?period=week&comparison=<?php echo isset($_GET['comparison']) ? htmlspecialchars($_GET['comparison']) : 'none'; ?>" class="period-btn <?php echo (isset($_GET['period']) && $_GET['period'] === 'week') ? 'active' : ''; ?>">
                         <i class="bi bi-calendar-week"></i> Última Semana
                     </a>
-                    <a href="/admin/reports?period=month&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'month') ? 'active' : ''; ?>">
+                    <a href="/admin/reports?period=month&comparison=<?php echo isset($_GET['comparison']) ? htmlspecialchars($_GET['comparison']) : 'none'; ?>" class="period-btn <?php echo (isset($_GET['period']) && $_GET['period'] === 'month') ? 'active' : ''; ?>">
                         <i class="bi bi-calendar-month"></i> Último Mes
                     </a>
-                    <a href="/admin/reports?period=quarter&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'quarter') ? 'active' : ''; ?>">
+                    <a href="/admin/reports?period=quarter&comparison=<?php echo isset($_GET['comparison']) ? htmlspecialchars($_GET['comparison']) : 'none'; ?>" class="period-btn <?php echo (isset($_GET['period']) && $_GET['period'] === 'quarter') ? 'active' : ''; ?>">
                         <i class="bi bi-calendar3"></i> Último Trimestre
                     </a>
-                    <a href="/admin/reports?period=year&comparison=<?php echo $comparison ?? 'none'; ?>" class="period-btn <?php echo ($period === 'year') ? 'active' : ''; ?>">
+                    <a href="/admin/reports?period=year&comparison=<?php echo isset($_GET['comparison']) ? htmlspecialchars($_GET['comparison']) : 'none'; ?>" class="period-btn <?php echo (isset($_GET['period']) && $_GET['period'] === 'year') ? 'active' : ''; ?>">
                         <i class="bi bi-calendar-check"></i> Último Año
                     </a>
                 </div>
@@ -42,9 +45,9 @@
                     <i class="bi bi-bar-chart-line"></i> Comparar con:
                 </label>
                 <select class="form-select" id="comparisonSelect" onchange="updateComparison()" style="border-color: #CD853F;">
-                    <option value="none" <?php echo ($comparison ?? 'none') === 'none' ? 'selected' : ''; ?>>Sin comparación</option>
-                    <option value="previous" <?php echo ($comparison ?? 'none') === 'previous' ? 'selected' : ''; ?>>Período Anterior</option>
-                    <option value="same" <?php echo ($comparison ?? 'none') === 'same' ? 'selected' : ''; ?>>Mismo Período Año Anterior</option>
+                    <option value="none" <?php echo (isset($_GET['comparison']) && $_GET['comparison'] === 'none') || !isset($_GET['comparison']) ? 'selected' : ''; ?>>Sin comparación</option>
+                    <option value="previous" <?php echo isset($_GET['comparison']) && $_GET['comparison'] === 'previous' ? 'selected' : ''; ?>>Período Anterior</option>
+                    <option value="same" <?php echo isset($_GET['comparison']) && $_GET['comparison'] === 'same' ? 'selected' : ''; ?>>Mismo Período Año Anterior</option>
                 </select>
             </div>
         </div>
@@ -52,13 +55,26 @@
         <script>
             function updateComparison() {
                 const comparison = document.getElementById('comparisonSelect').value;
-                const period = '<?php echo $period; ?>';
+                const params = new URLSearchParams(window.location.search);
+                const period = params.get('period') || 'month';
                 window.location.href = `/admin/reports?period=${period}&comparison=${comparison}`;
             }
         </script>
 
-        <!-- Resumen de Reportes -->
-        <h2 class="section-title">Resumen de Ingresos <?php if ($comparisonData): ?><small style="font-size: 0.6em; color: #666;"> - Período Actual</small><?php endif; ?></h2>
+        <!-- Resumen de Reportes con Comparación -->
+        <?php if ($comparisonData): ?>
+        <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 10px; margin-bottom: 30px; border-left: 5px solid #8B4513;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <i class="bi bi-bar-chart-line-fill" style="font-size: 1.5rem; color: #8B4513;"></i>
+                <h3 style="margin: 0; color: #8B4513;">Análisis Comparativo</h3>
+            </div>
+            <p style="margin: 0; color: #666;">
+                Comparando el <strong>período actual</strong> con <strong><?php echo strtolower($comparisonData['period_name']); ?></strong>
+            </p>
+        </div>
+        <?php endif; ?>
+
+        <h2 class="section-title">Resumen de Ingresos - Período Actual</h2>
         <div class="row">
             <div class="col-md-4">
                 <div class="report-card">
@@ -67,7 +83,7 @@
                     <?php if ($comparisonData): ?>
                         <div class="comparison-badge <?php echo $comparisonData['revenue_change'] >= 0 ? 'positive' : 'negative'; ?>">
                             <i class="bi bi-<?php echo $comparisonData['revenue_change'] >= 0 ? 'arrow-up' : 'arrow-down'; ?>"></i>
-                            <?php echo abs($comparisonData['revenue_change']); ?>% vs <?php echo $comparisonData['period_name']; ?>
+                            <?php echo abs($comparisonData['revenue_change']); ?>% vs Período Anterior
                         </div>
                     <?php endif; ?>
                 </div>
@@ -79,7 +95,7 @@
                     <?php if ($comparisonData): ?>
                         <div class="comparison-badge <?php echo $comparisonData['orders_change'] >= 0 ? 'positive' : 'negative'; ?>">
                             <i class="bi bi-<?php echo $comparisonData['orders_change'] >= 0 ? 'arrow-up' : 'arrow-down'; ?>"></i>
-                            <?php echo abs($comparisonData['orders_change']); ?>% vs <?php echo $comparisonData['period_name']; ?>
+                            <?php echo abs($comparisonData['orders_change']); ?>% vs Período Anterior
                         </div>
                     <?php endif; ?>
                 </div>
@@ -91,7 +107,7 @@
                     <?php if ($comparisonData): ?>
                         <div class="comparison-badge <?php echo $comparisonData['consumption_change'] >= 0 ? 'positive' : 'negative'; ?>">
                             <i class="bi bi-<?php echo $comparisonData['consumption_change'] >= 0 ? 'arrow-up' : 'arrow-down'; ?>"></i>
-                            <?php echo abs($comparisonData['consumption_change']); ?>% vs <?php echo $comparisonData['period_name']; ?>
+                            <?php echo abs($comparisonData['consumption_change']); ?>% vs Período Anterior
                         </div>
                     <?php endif; ?>
                 </div>
@@ -105,20 +121,20 @@
         </h2>
         <div class="row">
             <div class="col-md-4">
-                <div class="report-card" style="background-color: #f8f9fa; border-left: 4px solid #6c757d;">
-                    <h5><i class="bi bi-cash-coin"></i> Ingresos Totales</h5>
+                <div class="report-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 4px solid #6c757d;">
+                    <h5 style="color: #495057;"><i class="bi bi-cash-coin"></i> Ingresos Totales</h5>
                     <div class="report-value" style="color: #6c757d;">$<?php echo number_format($comparisonData['total_revenue'], 2); ?></div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="report-card" style="background-color: #f8f9fa; border-left: 4px solid #6c757d;">
-                    <h5><i class="bi bi-bag-check"></i> Total de Pedidos</h5>
+                <div class="report-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 4px solid #6c757d;">
+                    <h5 style="color: #495057;"><i class="bi bi-bag-check"></i> Total de Pedidos</h5>
                     <div class="report-value" style="color: #6c757d;"><?php echo $comparisonData['total_orders']; ?></div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="report-card" style="background-color: #f8f9fa; border-left: 4px solid #6c757d;">
-                    <h5><i class="bi bi-graph-up"></i> Consumo Promedio</h5>
+                <div class="report-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-left: 4px solid #6c757d;">
+                    <h5 style="color: #495057;"><i class="bi bi-graph-up"></i> Consumo Promedio</h5>
                     <div class="report-value" style="color: #6c757d;"><?php echo $comparisonData['average_consumption']; ?> items</div>
                 </div>
             </div>

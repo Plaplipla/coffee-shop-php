@@ -137,14 +137,14 @@ POST /payment/webhook           → Webhooks de Stripe
 │  Tu Servidor    │         │    Stripe    │
 └─────────────────┘         └──────────────┘
         │                           │
-        │  1. Crea sesión          │
+        │  1. Crea sesión           │
         ├──────────────────────────>│
         │                           │
-        │  2. Redirige cliente     │
+        │  2. Redirige cliente      │
         ├──────────────────────────>│
         │                           │
-        │     3. Cliente paga      │
-        │        (directo)         │
+        │     3. Cliente paga       │
+        │        (directo)          │
         │                     ┌────>│
         │                     │     │
         │  4. Confirmación    │     │
