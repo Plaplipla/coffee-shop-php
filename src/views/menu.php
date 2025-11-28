@@ -156,45 +156,44 @@
         </div>
     </main>
     
-    <div class="product-modal" id="productModal">
-        <div class="modal-content-product">
-            <button class="modal-close-btn" onclick="closeProductModal()">✕</button>
-
-            <h2 class="modal-product-title" id="modalTitle"></h2>
-            <p class="modal-product-description" id="modalDescription"></p>
-
-            <div id="modalIngredients" class="modal-ingredients" style="display:none;">
-                <h4>Ingredientes</h4>
-                <p id="modalIngredientsList"></p>
-            </div>
-
-            <div class="extras-section" id="modalExtrasSection">
-                <div class="extras-title">
-                    ¿Deseas agregar extra?
-                    <span>Opcional</span>
-                </div>
-                <div id="extrasContainer">
-                </div>
-            </div>
-
-            <div class="quantity-selector">
-                <button type="button" class="quantity-btn" onclick="decreaseQuantity()">−</button>
-                <span class="quantity-display" id="modalQuantity">1</span>
-                <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
-            </div>
-
-            <div class="modal-footer">
-                <div class="modal-price" id="modalPrice" style="color: white;">$0</div>
-                <form method="POST" action="/cart/add" style="display: flex; gap: 10px;">
-                    <input type="hidden" name="product_id" id="modalProductId">
-                    <input type="hidden" name="quantity" id="modalQuantityInput" value="1">
-                    <input type="hidden" name="product_price" id="modalProductPrice">
-                    <input type="hidden" name="extras" id="modalExtras" value="{}">
-                    <input type="hidden" name="return_url" value="/menu">
-                    <button type="submit" class="modal-add-btn">Agregar</button>
-                </form>
-            </div>
+    <!-- Offcanvas Bootstrap para producto (no afecta el grid) -->
+    <div class="offcanvas offcanvas-end product-offcanvas" tabindex="-1" id="productOffcanvas" aria-labelledby="productOffcanvasLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title modal-product-title mb-0" id="productOffcanvasLabel">
+            <span id="modalTitle"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+      </div>
+      <div class="offcanvas-body">
+        <p class="modal-product-description" id="modalDescription"></p>
+        <div id="modalIngredients" class="modal-ingredients" style="display:none;">
+            <h4>Ingredientes</h4>
+            <p id="modalIngredientsList"></p>
         </div>
+        <div class="extras-section" id="modalExtrasSection">
+            <div class="extras-title">
+                ¿Deseas agregar extra?
+                <span>Opcional</span>
+            </div>
+            <div id="extrasContainer"></div>
+        </div>
+        <div class="quantity-selector mb-3">
+            <button type="button" class="quantity-btn" onclick="decreaseQuantity()">−</button>
+            <span class="quantity-display" id="modalQuantity">1</span>
+            <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
+        </div>
+        <div class="modal-footer d-flex align-items-center justify-content-between p-0">
+            <div class="modal-price" id="modalPrice" style="color: white;">$0</div>
+            <form method="POST" action="/cart/add" class="d-flex gap-2">
+                <input type="hidden" name="product_id" id="modalProductId">
+                <input type="hidden" name="quantity" id="modalQuantityInput" value="1">
+                <input type="hidden" name="product_price" id="modalProductPrice">
+                <input type="hidden" name="extras" id="modalExtras" value="{}">
+                <input type="hidden" name="return_url" value="/menu">
+                <button type="submit" class="modal-add-btn">Agregar</button>
+            </form>
+        </div>
+      </div>
     </div>
     
     <?php include __DIR__ . '/partials/footer.php'; ?>

@@ -74,11 +74,32 @@ function openProductModal(element) {
     }
     updateModalPrice();
     
-    document.getElementById('productModal').classList.add('active');
+    // Mostrar offcanvas si existe, sino fallback al modal personalizado
+    const offEl = document.getElementById('productOffcanvas');
+    if (offEl && window.bootstrap && bootstrap.Offcanvas) {
+        let inst = bootstrap.Offcanvas.getInstance(offEl);
+        if (!inst) inst = new bootstrap.Offcanvas(offEl);
+        inst.show();
+    } else {
+        const modalEl = document.getElementById('productModal');
+        if (modalEl) {
+            modalEl.classList.add('active');
+            document.body.classList.add('modal-open');
+        }
+    }
 }
 
 function closeProductModal() {
-    document.getElementById('productModal').classList.remove('active');
+    const offEl = document.getElementById('productOffcanvas');
+    if (offEl && window.bootstrap && bootstrap.Offcanvas) {
+        const inst = bootstrap.Offcanvas.getInstance(offEl);
+        if (inst) inst.hide();
+    }
+    const modalEl = document.getElementById('productModal');
+    if (modalEl) {
+        modalEl.classList.remove('active');
+        document.body.classList.remove('modal-open');
+    }
     currentQuantity = 1;
 }
 
