@@ -22,6 +22,26 @@ if (isset($_SESSION['user_id']) && $_SESSION['user_role'] === 'administrador') {
             document.getElementById('discount-aviso').style.display = 'none';
         });
         </script>
+    <?php elseif (isset($_SESSION['user_id']) && (!isset($_SESSION['email_verified']) || $_SESSION['email_verified'] === false)): ?>
+        <div id="email-verification-banner" class="bg-warning text-dark text-center py-2 position-relative">
+            <p class="mb-0">
+                <i class="bi bi-envelope"></i> 
+                <strong>Verifica tu correo electrónico</strong> para acceder a todas las funciones. 
+                <a href="#" id="resend-verification" class="text-dark" style="text-decoration: underline;">Reenviar correo</a>
+            </p>
+            <button id="verification-close" type="button" aria-label="Cerrar aviso" style="position:absolute;right:10px;top:6px;background:transparent;border:none;color:#000;font-size:1.1rem;line-height:1;cursor:pointer;">&times;</button>
+        </div>
+        <script>
+        document.getElementById('verification-close').addEventListener('click', function () {
+            document.getElementById('email-verification-banner').style.display = 'none';
+        });
+        document.getElementById('resend-verification').addEventListener('click', async function (e) {
+            e.preventDefault();
+            const response = await fetch('/auth/resend-verification');
+            const data = await response.json();
+            alert(data.message);
+        });
+        </script>
     <?php endif; ?>
 
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">

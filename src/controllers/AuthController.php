@@ -136,11 +136,16 @@ class AuthController {
                 return;
             }
             
+            // Generar token de verificación y enviar email
+            $token = $this->userModel->generateVerificationToken($email);
+            $emailSent = EmailService::sendVerificationEmail($email, $name, $token);
+            
             // Iniciar sesión automáticamente
             $_SESSION['user_id'] = (string)$userId;
             $_SESSION['user_name'] = $name;
             $_SESSION['user_email'] = $email;
             $_SESSION['user_role'] = 'cliente';
+            $_SESSION['email_verified'] = false; // Marcar como no verificado
             
             $cookie_value = base64_encode(json_encode([
                 'user_id' => (string)$userId,
@@ -149,14 +154,80 @@ class AuthController {
             
             setcookie('coffee_session', $cookie_value, time() + (86400 * 7), '/');
             
+            $message = '¡Registro exitoso! Bienvenido';
+            if ($emailSent) {
+                $message .= '. Te hemos enviado un correo de verificación.';
+            }
+            
             echo json_encode([
                 'success' => true,
-                'message' => '¡Registro exitoso! Bienvenido',
-                'redirect' => '/home'
+                'message' => $message,
+                'redirect' => '/home',
+                'email_sent' => $emailSent
             ]);
             
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Error al registrar usuario: ' . $e->getMessage()]);
+        }
+    }
+    
+    /**
+     * Verificar email con token
+     */
+    public function verifyEmail() {
+        $token = $_GET['token'] ?? '';
+        
+        if (empty($token)) {
+            $_SESSION['error'] = 'Token de verificación no válido';
+            header('Location: /login');
+            exit;
+        }
+        
+        $user = $this->userModel->verifyEmailWithToken($token);
+        
+        if ($user) {
+            // Actualizar sesión si el usuario está logueado
+            if (isset($_SESSION['user_email']) && $_SESSION['user_email'] === $user->email) {
+                $_SESSION['email_verified'] = true;
+            }
+            
+            $_SESSION['success'] = '¡Email verificado exitosamente! Ya puedes usar todas las funciones.';
+            header('Location: /home');
+        } else {
+            $_SESSION['error'] = 'El token de verificación es inválido o ha expirado. Solicita un nuevo correo de verificación.';
+            header('Location: /home');
+        }
+        exit;
+    }
+    
+    /**
+     * Reenviar correo de verificación
+     */
+    public function resendVerification() {
+        header('Content-Type: application/json');
+        
+        if (!isset($_SESSION['user_email'])) {
+            echo json_encode(['success' => false, 'message' => 'Debes iniciar sesión']);
+            return;
+        }
+        
+        $email = $_SESSION['user_email'];
+        $name = $_SESSION['user_name'] ?? 'Usuario';
+        
+        // Verificar si ya está verificado
+        if ($this->userModel->isEmailVerified($email)) {
+            echo json_encode(['success' => false, 'message' => 'Tu email ya está verificado']);
+            return;
+        }
+        
+        // Generar nuevo token y enviar
+        $token = $this->userModel->generateVerificationToken($email);
+        $emailSent = EmailService::sendVerificationEmail($email, $name, $token);
+        
+        if ($emailSent) {
+            echo json_encode(['success' => true, 'message' => 'Correo de verificación enviado. Revisa tu bandeja de entrada.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al enviar el correo. Intenta más tarde.']);
         }
     }
 }
