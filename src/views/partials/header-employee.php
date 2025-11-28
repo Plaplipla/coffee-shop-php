@@ -1,3 +1,12 @@
+<?php
+// Limpiar errores de otros controladores si el usuario tiene acceso válido
+if (isset($_SESSION['user_role']) && 
+    ($_SESSION['user_role'] === 'empleado' || 
+     $_SESSION['user_role'] === 'trabajador' || 
+     $_SESSION['user_role'] === 'administrador')) {
+    unset($_SESSION['error']);
+}
+?>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">

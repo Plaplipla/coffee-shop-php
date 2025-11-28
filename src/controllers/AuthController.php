@@ -149,7 +149,7 @@ class AuthController {
             // Generar token de verificación y enviar email
             $token = $this->userModel->generateVerificationToken($email);
             $emailSent = EmailService::sendVerificationEmail($email, $name, $token);
-            
+
             // Iniciar sesión automáticamente
             $_SESSION['user_id'] = (string)$userId;
             $_SESSION['user_name'] = $name;
@@ -201,13 +201,37 @@ class AuthController {
                 $_SESSION['email_verified'] = true;
             }
             
-            $_SESSION['success'] = '¡Email verificado exitosamente! Ya puedes usar todas las funciones.';
-            header('Location: /home');
+            $_SESSION['success'] = '¡Email verificado exitosamente!';
+            // Generar token de vista con timestamp y firma HMAC
+            $stamp = (string)time();
+            $secret = getenv('EMAIL_TOKEN_SECRET') ?: 'dev-secret';
+            $sig = hash_hmac('sha256', $stamp, $secret);
+            header('Location: /auth/verified?t=' . urlencode($stamp) . '&s=' . urlencode($sig));
         } else {
             $_SESSION['error'] = 'El token de verificación es inválido o ha expirado. Solicita un nuevo correo de verificación.';
-            header('Location: /home');
+            header('Location: /login');
         }
         exit;
+    }
+
+    /**
+     * Vista de verificación con token de tiempo leve y redirección a login
+     */
+    public function verified() {
+        $t = $_GET['t'] ?? '';
+        $s = $_GET['s'] ?? '';
+        if (!$t || !$s) {
+            header('Location: /login');
+            exit;
+        }
+        $secret = getenv('EMAIL_TOKEN_SECRET') ?: 'dev-secret';
+        $expected = hash_hmac('sha256', (string)$t, $secret);
+        $age = time() - (int)$t;
+        if (!hash_equals($expected, $s) || $age < 0 || $age > 300) { // válido por 5 minutos
+            header('Location: /login');
+            exit;
+        }
+        require_once __DIR__ . '/../views/verified.php';
     }
     
     /**

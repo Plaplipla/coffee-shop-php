@@ -31,7 +31,7 @@ $uri = trim($uri, '/');
 
 // RUTAS PÚBLICAS
 $publicRoutes = [
-    '', 'home', 'login', 'auth/login', 'register', 'auth/register', 'auth/verify-email', 'auth/resend-verification',
+    '', 'home', 'login', 'auth/login', 'register', 'auth/register', 'auth/verify-email', 'auth/verified', 'auth/resend-verification',
     'cart', 'cart/add', 'cart/remove', 'cart/update-quantity', 'cart/clear', 'cart/check-email',
     'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'contact/send', 'about',
     'payment/create-checkout', 'payment/success', 'payment/cancel', 'payment/webhook',
@@ -105,6 +105,11 @@ switch ($uri) {
     case 'auth/verify-email':
         $controller = new AuthController();
         $controller->verifyEmail();
+        break;
+
+    case 'auth/verified':
+        $controller = new AuthController();
+        $controller->verified();
         break;
     
     case 'auth/resend-verification':
