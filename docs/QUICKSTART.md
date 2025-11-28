@@ -31,9 +31,10 @@ docker exec -i coffee_shop_db mongosh < init-db.js
 ## 👥 Usuarios de Prueba
 
 | Email | Contraseña | Rol |
-|-------|-----------|-----|
+|-------|------------|-----|
 | cliente@coffee.com | 123456 | Cliente |
 | trabajador@coffee.com | 123456 | Trabajador |
+| repartidor@coffee.com | 123456 | Repartidor |
 | admin@coffee.com | 123456 | Administrador |
 
 ## 🔥 Hot-Reload

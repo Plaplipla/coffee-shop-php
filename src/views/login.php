@@ -58,6 +58,7 @@
                         <i class="bi bi-info-circle"></i> Usuarios de prueba:<br>
                         <strong>Cliente:</strong> cliente@coffee.com<br>
                         <strong>Trabajador:</strong> trabajador@coffee.com<br>
+                        <strong>Repartidor:</strong> repartidor@coffee.com<br>
                         <strong>Admin:</strong> admin@coffee.com<br>
                         <em>(Contraseña para todos: 123456)</em>
                     </small>

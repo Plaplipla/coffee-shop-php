@@ -97,6 +97,7 @@ http://localhost:8081
 │  ℹ️ Usuarios de prueba:             │
 │  Cliente: cliente@coffee.com        │
 │  Trabajador: trabajador@coffee.com  │
+│  Repartidor: repartidor@coffee.com  │
 │  Admin: admin@coffee.com            │
 │  (Contraseña: 123456)               │
 └─────────────────────────────────────┘

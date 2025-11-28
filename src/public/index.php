@@ -35,7 +35,7 @@ $publicRoutes = [
     'cart', 'cart/add', 'cart/remove', 'cart/update-quantity', 'cart/clear', 'cart/check-email',
     'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'contact/send', 'about',
     'payment/create-checkout', 'payment/success', 'payment/cancel', 'payment/webhook',
-    'employee/orders', 'admin/dashboard', 'admin/reports', 'admin/export', 'track-order', 'order-history'
+    'employee/orders', 'delivery/orders', 'admin/dashboard', 'admin/reports', 'admin/export', 'track-order', 'order-history'
 ];
 
 // Verificar sesión solo para rutas protegidas
@@ -187,6 +187,16 @@ switch ($uri) {
 
     case 'employee/update-status':
         $controller = new EmployeeController();
+        $controller->updateStatus();
+        break;
+
+    case 'delivery/orders':
+        $controller = new DeliveryController();
+        $controller->orders();
+        break;
+
+    case 'delivery/update-status':
+        $controller = new DeliveryController();
         $controller->updateStatus();
         break;
 

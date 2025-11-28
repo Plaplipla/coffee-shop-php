@@ -31,6 +31,13 @@ db.users.insertMany([
         password: "$2y$10$k3mAM9vNjsDIKdLq3SYIgeKi3B5fw15Lpx4uBnxrftZ3PexqFL.8K", // 123456
         role: "administrador",
         created_at: new Date()
+    },
+    {
+        name: "Repartidor Demo",
+        email: "repartidor@coffee.com",
+        password: "$2y$10$k3mAM9vNjsDIKdLq3SYIgeKi3B5fw15Lpx4uBnxrftZ3PexqFL.8K", // 123456
+        role: "repartidor",
+        created_at: new Date()
     }
 ]);
 

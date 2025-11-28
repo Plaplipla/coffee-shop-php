@@ -59,10 +59,20 @@ class AuthController {
         
         setcookie('coffee_session', $cookie_value, time() + (86400 * 7), '/');
         
+        // Determinar redirección según rol
+        $redirect = '/home';
+        if ($user->role === 'administrador') {
+            $redirect = '/admin/dashboard';
+        } elseif ($user->role === 'trabajador' || $user->role === 'empleado') {
+            $redirect = '/employee/orders';
+        } elseif ($user->role === 'repartidor') {
+            $redirect = '/delivery/orders';
+        }
+        
         echo json_encode([
             'success' => true,
             'message' => 'Login exitoso',
-            'redirect' => '/home'
+            'redirect' => $redirect
         ]);
     }
     

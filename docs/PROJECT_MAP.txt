@@ -150,6 +150,10 @@ php-proyect/
      📧 trabajador@coffee.com
      🔑 123456
 
+  🚚 Repartidor
+     📧 repartidor@coffee.com
+     🔑 123456
+
   👨‍💻 Administrador
      📧 admin@coffee.com
      🔑 123456

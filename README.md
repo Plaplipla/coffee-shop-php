@@ -138,6 +138,7 @@ Abre tu navegador en: **http://localhost:8081**
 |---------------|--------------------------|------------|
 | Cliente       | cliente@coffee.com       | 123456     |
 | Trabajador    | trabajador@coffee.com    | 123456     |
+| Repartidor    | repartidor@coffee.com    | 123456     |
 | Administrador | admin@coffee.com         | 123456     |
 
 ## 🔥 Hot-Reload

@@ -21,9 +21,10 @@ echo.
 echo Accede a la aplicacion en: http://localhost:8080
 echo.
 echo Usuarios de prueba:
-echo    Cliente:     cliente@coffee.com      (contrasena: 123456)
-echo    Trabajador:  trabajador@coffee.com   (contrasena: 123456)
-echo    Admin:       admin@coffee.com        (contrasena: 123456)
+echo    Cliente:     cliente@coffee.com      (contraseña: 123456)
+echo    Trabajador:  trabajador@coffee.com   (contraseña: 123456)
+echo    Repartidor:  repartidor@coffee.com   (contraseña: 123456)
+echo    Admin:       admin@coffee.com        (contraseña: 123456)
 echo.
 echo Hot-reload activado: Edita archivos en src/ y recarga el navegador
 echo.
