@@ -90,7 +90,7 @@
                                                     $hasAnyExtra = true;
                                                 }
                                                 echo '<div class="d-flex align-items-center gap-2 small text-muted">'
-                                                    . '<span>' . htmlspecialchars($extrasLabels[$key]) . ' x' . intval($quantity) . '</span>'
+                                                    . '<span>' . htmlspecialchars($extrasLabels[$key]) . '</span>'
                                                     . '<form method="POST" action="/cart/remove-extra" class="d-inline">'
                                                     . '<input type="hidden" name="cart_item_key" value="' . htmlspecialchars($item['cart_item_key']) . '">'
                                                     . '<input type="hidden" name="extra_id" value="' . htmlspecialchars($key) . '">'

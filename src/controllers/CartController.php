@@ -71,8 +71,28 @@ class CartController {
                 // Guardar y recalcular precio unitario
                 $item['extras'] = json_encode($extras);
                 $item['price'] = $this->recalculateItemUnitPrice($item);
-                $_SESSION['cart'][$cartItemKey] = $item;
-                $_SESSION['success'] = 'Extra eliminado y precio actualizado';
+                
+                // Generar nueva clave con extras actualizados
+                $newCartKey = $item['product_id'] . '_' . md5($item['extras']);
+                
+                // Si la nueva clave es diferente y ya existe otro item con la misma config, consolidar
+                if ($newCartKey !== $cartItemKey && isset($_SESSION['cart'][$newCartKey])) {
+                    // Sumar cantidades al item existente
+                    $_SESSION['cart'][$newCartKey]['quantity'] += $item['quantity'];
+                    // Eliminar el item antiguo
+                    unset($_SESSION['cart'][$cartItemKey]);
+                    $_SESSION['success'] = 'Extra eliminado y productos consolidados';
+                } else if ($newCartKey !== $cartItemKey) {
+                    // Cambiar clave del item (no hay duplicado)
+                    unset($_SESSION['cart'][$cartItemKey]);
+                    $item['cart_item_key'] = $newCartKey;
+                    $_SESSION['cart'][$newCartKey] = $item;
+                    $_SESSION['success'] = 'Extra eliminado y precio actualizado';
+                } else {
+                    // La clave no cambió, solo actualizar
+                    $_SESSION['cart'][$cartItemKey] = $item;
+                    $_SESSION['success'] = 'Extra eliminado y precio actualizado';
+                }
             } else {
                 $_SESSION['error'] = 'No se pudo eliminar el extra';
             }
