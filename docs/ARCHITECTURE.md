@@ -105,17 +105,20 @@ Admin → Dashboard → Reportes → Exportar PDF/Excel
 - `orders()` → Historial de pedidos del cliente
 
 #### `CartController.php`
-- `view()` → Ver carrito
-- `add()` → Agregar producto al carrito (sesión)
-- `remove()` → Eliminar item del carrito
+- `view()` → Ver carrito con encabezados de columnas
+- `add()` → Agregar producto al carrito (sesión) con extras
+- `remove()` → Eliminar item completo del carrito
+- `removeExtra()` → Eliminar extra específico de un item y consolidar duplicados automáticamente
 - `updateQuantity()` → Actualizar cantidad
 - `clear()` → Vaciar carrito
-- `checkout()` → Vista de checkout con validación de descuento
+- `checkout()` → Vista de checkout con validación de descuento y dirección
 - `processOrder()` → Procesar pedido y guardar en MongoDB
 - `orderConfirmation()` → Página de confirmación
 - `checkEmail()` → AJAX para validar elegibilidad de descuento
+- `recalculateItemUnitPrice()` → Recalcular precio unitario basado en extras activos
 
 **Optimización:** Usa `$this->orderModel` como propiedad de clase en vez de múltiples `require_once`
+**Consolidación:** Al eliminar extras, items idénticos se fusionan automáticamente sumando cantidades
 
 #### `ProductsController.php`
 - `index()` → Lista de productos (admin)
@@ -311,14 +314,16 @@ if ($uri !== 'login' && $uri !== 'auth/login' && empty($_SESSION['user_id'])) {
 ### Carrito (Público, pero sesión necesaria para comprar)
 | Ruta | Método | Descripción | Controller |
 |------|--------|-------------|------------|
-| `/cart` | GET | Ver carrito | CartController |
-| `/cart/add` | POST | Agregar al carrito | CartController |
-| `/cart/remove` | POST | Eliminar del carrito | CartController |
+| `/cart` | GET | Ver carrito con tabla de items | CartController |
+| `/cart/add` | POST | Agregar al carrito con extras | CartController |
+| `/cart/remove` | POST | Eliminar item completo del carrito | CartController |
+| `/cart/remove-extra` | POST | Eliminar extra específico + consolidar | CartController |
 | `/cart/update-quantity` | POST | Actualizar cantidad | CartController |
 | `/cart/clear` | POST | Vaciar carrito | CartController |
-| `/checkout` | GET | Página de checkout | CartController |
-| `/cart/process-order` | POST | Procesar pedido | CartController |
+| `/checkout` | GET | Página de checkout con validación dirección | CartController |
+| `/cart/process-order` | POST | Procesar pedido (normal o Stripe) | CartController |
 | `/cart/order-confirmation` | GET | Confirmación de pedido | CartController |
+| `/cart/check-email` | GET | Verificar elegibilidad descuento | CartController |
 
 ### Cliente Autenticado
 | Ruta | Método | Descripción | Controller |

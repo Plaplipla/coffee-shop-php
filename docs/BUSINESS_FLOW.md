@@ -127,12 +127,14 @@ Coffee Shop es un sistema de e-commerce B2C (Business to Consumer) especializado
 └────────┬────────┘     └──────────────┘
          │
          ▼
-┌─────────────────┐
-│ Ver Carrito     │
-│ - Revisar items │
-│ - Actualizar    │
-│ - Eliminar      │
-└────────┬────────┘
+┌────────────────────────┐
+│ Ver Carrito            │
+│ - Revisar items        │
+│ - Actualizar cantidad  │
+│ - Eliminar items       │
+│ - Eliminar extras (×)  │
+│ - Consolidación auto   │
+└───────────┬────────────┘
          │
          ▼
 ┌─────────────────┐
@@ -190,12 +192,24 @@ Coffee Shop es un sistema de e-commerce B2C (Business to Consumer) especializado
 
 **Cálculo de Total:**
 ```
-Subtotal    = Σ (Precio × Cantidad) de todos los items
+Precio Item = Precio Base + Σ(Extras activos)
+Subtotal    = Σ (Precio Item × Cantidad) de todos los items
 Envío       = $3,000 si delivery | $0 si pickup
 Descuento   = Subtotal × 15% (solo primer pedido)
 ─────────────────────────────────────────────────
 TOTAL       = Subtotal + Envío - Descuento
 ```
+
+**Extras Disponibles:**
+- Descafeinado: +$1,000
+- Extra shot de café: +$990
+- Syrup Vainilla: +$990
+- Syrup Chocolate: +$990
+
+**Gestión de Extras en Carrito:**
+- Toggle estilo iOS para activar/desactivar
+- Botón "×" para eliminar extra de item existente
+- Consolidación automática: items idénticos se fusionan al eliminar extras
 
 ### 3. Seguimiento de Pedido
 

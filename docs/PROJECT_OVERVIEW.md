@@ -156,14 +156,20 @@ http://localhost:8081
 - [x] Hot-reload automático
 - [x] Base de datos MongoDB
 
-### 📋 Por Implementar (Futuro)
-- [ ] Carrito de compras
-- [ ] Proceso de checkout
-- [ ] Sistema de pagos
-- [ ] Panel de administración
-- [ ] CRUD de productos
-- [ ] Gestión de pedidos
-- [ ] Reportes y estadísticas
+### 📋 Funcionalidades Avanzadas Implementadas
+- [x] Carrito de compras con extras personalizables
+- [x] Proceso de checkout con validación de dirección
+- [x] Sistema de pagos (Stripe + efectivo/tarjeta local)
+- [x] Panel de administración con dashboard y reportes
+- [x] CRUD de productos con soft delete
+- [x] Gestión de pedidos por rol (empleado/repartidor)
+- [x] Reportes y estadísticas con exportación PDF
+- [x] Verificación de correo electrónico
+- [x] Sistema de descuentos (primer pedido)
+- [x] Seguimiento de pedidos en tiempo real
+- [x] Geocodificación de direcciones con Nominatim
+- [x] Extras removibles con toggle estilo iOS
+- [x] Consolidación automática de items duplicados en carrito
 
 ---
 
