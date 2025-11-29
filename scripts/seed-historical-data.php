@@ -1,21 +1,22 @@
 <?php
 /**
- * Script para poblar la base de datos con datos históricos ficticios
- * Genera pedidos del año 2024 para permitir comparaciones en reportes
+ * Script para generar datos históricos de 2024 para comparaciones año-a-año
+ * Distribuye pedidos mensuales del año anterior.
+ * Uso (dentro del contenedor):
+ *   php /var/www/html/scripts/seed-historical-data.php
  */
 
-// Definir constantes de conexión
 define('MONGO_HOST', getenv('MONGO_HOST') ?: 'mongodb');
 define('MONGO_PORT', getenv('MONGO_PORT') ?: '27017');
 define('MONGO_DB', getenv('MONGO_DB') ?: 'coffee_shop');
+
 define('MONGO_USER', getenv('MONGO_USER') ?: '');
 define('MONGO_PASS', getenv('MONGO_PASS') ?: '');
 
-require_once '/var/www/html/core/Database.php';
+require_once __DIR__ . '/../src/core/Database.php';
 
 $db = Database::getInstance();
 
-// Productos disponibles
 $productos = [
     ['name' => 'Café Americano', 'price' => 2500],
     ['name' => 'Café Latte', 'price' => 3500],
@@ -26,35 +27,27 @@ $productos = [
     ['name' => 'Croissant', 'price' => 2800],
     ['name' => 'Brownie', 'price' => 3200],
     ['name' => 'Cheesecake', 'price' => 4200],
-    ['name' => 'Muffin', 'price' => 2500]
+    ['name' => 'Muffin', 'price' => 2500],
 ];
 
 $estados = ['pending', 'preparing', 'ready', 'delivered'];
 $metodoPago = ['efectivo', 'tarjeta', 'stripe'];
-
-// Generar pedidos para cada mes de 2024
 $pedidosGenerados = 0;
 $año = 2024;
 
 echo "Generando datos históricos para el año $año...\n\n";
 
 for ($mes = 1; $mes <= 12; $mes++) {
-    // Número de pedidos por mes (varía entre 20-40 pedidos)
     $pedidosPorMes = rand(20, 40);
-    
     echo "Mes $mes: Generando $pedidosPorMes pedidos...\n";
     
     for ($i = 0; $i < $pedidosPorMes; $i++) {
-        // Fecha aleatoria dentro del mes
-        $dia = rand(1, 28); // Usar 28 para evitar problemas con febrero
-        $hora = rand(8, 20); // Horario de 8am a 8pm
+        $dia = rand(1, 28);
+        $hora = rand(8, 20);
         $minuto = rand(0, 59);
+        $fechaUnix = strtotime("$año-$mes-$dia $hora:$minuto:00");
+        $fecha = new MongoDB\BSON\UTCDateTime($fechaUnix * 1000);
         
-        $fecha = new MongoDB\BSON\UTCDateTime(
-            strtotime("$año-$mes-$dia $hora:$minuto:00") * 1000
-        );
-        
-        // Generar 1-4 items por pedido
         $numItems = rand(1, 4);
         $items = [];
         $total = 0;
@@ -69,45 +62,37 @@ for ($mes = 1; $mes <= 12; $mes++) {
                 'name' => $producto['name'],
                 'price' => $producto['price'],
                 'quantity' => $cantidad,
-                'subtotal' => $subtotal
+                'subtotal' => $subtotal,
             ];
             
             $total += $subtotal;
         }
         
-        // Estado del pedido (80% entregados, resto variado)
         $rand = rand(1, 100);
-        if ($rand <= 80) {
-            $status = 'delivered';
-        } elseif ($rand <= 90) {
-            $status = 'ready';
-        } elseif ($rand <= 95) {
-            $status = 'preparing';
-        } else {
-            $status = 'pending';
-        }
+        $status = $rand <= 80 ? 'delivered' : ($rand <= 90 ? 'ready' : ($rand <= 95 ? 'preparing' : 'pending'));
         
-        // Crear pedido
         $pedido = [
-            'user_id' => 'hist_user_' . rand(1, 50), // 50 usuarios ficticios
+            'user_id' => 'hist_user_' . rand(1, 50),
             'customer_name' => 'Cliente Histórico ' . rand(1, 50),
-            'customer_email' => 'cliente' . rand(1, 50) . '@example.com',
+            'customer_email' => 'hist' . rand(1, 50) . '@example.com',
             'items' => $items,
             'total' => $total,
             'status' => $status,
             'payment_method' => $metodoPago[array_rand($metodoPago)],
-            'order_date' => date('Y-m-d H:i:s', strtotime("$año-$mes-$dia $hora:$minuto:00")),
+            'order_date' => date('Y-m-d H:i:s', $fechaUnix),
             'created_at' => $fecha,
-            'updated_at' => $fecha
+            'updated_at' => $fecha,
         ];
         
-        // Insertar en la base de datos
         $db->insert('pedidos', $pedido);
         $pedidosGenerados++;
     }
 }
 
 echo "\n✓ Proceso completado!\n";
-echo "Total de pedidos generados: $pedidosGenerados\n";
-echo "\nAhora puedes usar los reportes con comparaciones del año anterior.\n";
-?>
+echo "Total de pedidos del año $año generados: $pedidosGenerados\n";
+
+echo "\nSugerencias de uso:\n";
+echo "1. Ir a /admin/reports\n";
+echo "2. Activar comparaciones con el año anterior\n";
+echo "3. Verificar tendencias y crecimiento año-a-año\n";

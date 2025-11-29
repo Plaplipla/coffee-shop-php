@@ -37,6 +37,9 @@ php-proyect/
 │   ├── TROUBLESHOOTING.md     # Solución de problemas
 │   ├── CHECKLIST.md           # Lista de verificación
 │   └── ...más documentos
+├── scripts/                    # 🔧 Scripts de utilidad
+│   ├── seed-demo-orders.php          # Genera pedidos 2025 (reportes)
+│   └── seed-historical-data.php      # Genera pedidos 2024 (comparaciones)
 └── src/
     ├── controllers/            # Controladores MVC
     │   ├── AdminController.php        # Panel administrativo y mensajes
@@ -305,6 +308,12 @@ docker exec -it coffee_shop_db mongosh coffee_shop
 
 # Reiniciar servicios
 docker-compose restart
+
+# Generar datos demo (pedidos 2025 para reportes semana/mes/trimestre)
+docker exec -it coffee_shop_web php /var/www/html/scripts/seed-demo-orders.php
+
+# Generar datos históricos (pedidos 2024 para comparaciones año-a-año)
+docker exec -it coffee_shop_web php /var/www/html/scripts/seed-historical-data.php
 ```
 
 ## 🔧 Tecnologías

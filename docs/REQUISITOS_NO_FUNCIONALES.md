@@ -521,6 +521,7 @@ El sistema debe funcionar en navegadores y dispositivos comunes.
 |----|-----------|--------------|--------|-------|
 | RNF1.1 | Tiempo Carga Login | < 3 segundos | ✅ Implementado | Indexación de BD, caché de sesiones |
 | RNF1.2 | Actualización Stock | < 2 segundos | ✅ Implementado | Actualización asincrónica, caché invalidado |
+| RNF1.3 | Verificación Dirección | < 2.5 segundos respuesta geocoding | ✅ Implementado | Nominatim + Leaflet, bloqueo hasta verificación |
 | RNF2.1 | Usuarios Concurrentes | 100 mínimo | ✅ Implementado | Docker Compose con load balancing |
 | RNF2.2 | Pedidos Simultáneos | 250 mínimo | ✅ Implementado | MongoDB replicado |
 | RNF2.3 | Infraestructura | Servidor escalable | ⚠️ Parcial | Docker-ready, requiere cloud deployment |

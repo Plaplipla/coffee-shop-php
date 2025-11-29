@@ -154,6 +154,9 @@ Gestión del carrito de compras y procesamiento seguro de pagos en línea.
 - Aplicar descuentos/cupones
 - Persistencia del carrito (sesión o base de datos)
 - Validar disponibilidad de productos antes de checkout
+- Agregar extras opcionales estilo toggle (descafeinado, extra shot, syrups)
+- Eliminar extras individuales desde el carrito con botón ×
+- Consolidación automática de items cuando, tras eliminar extras, quedan configuraciones idénticas (suma de cantidades)
 
 **Validaciones:**
 - Cantidad mínima: 1 unidad
@@ -195,6 +198,27 @@ Gestión del carrito de compras y procesamiento seguro de pagos en línea.
 - Almacenamiento en base de datos
 - Acceso a boleta desde historial de pedidos
 - Descarga en formato PDF
+
+#### 3.4 Verificación de Dirección de Entrega
+**Actor:** Cliente (pedido con delivery)**  
+**Descripción:** Validación y normalización de la dirección antes de permitir finalizar un pedido a domicilio.
+
+**Funcionalidades:**
+- Campo de dirección libre
+- Botón "Verificar dirección" que consulta servicio de geocodificación (Nominatim)
+- Sugerencias alternativas y selección del mejor resultado
+- Mapa (Leaflet) que muestra el punto confirmado
+- Almacena latitud, longitud y dirección normalizada en el pedido
+- Deshabilita el botón de finalizar pedido hasta que la dirección esté verificada
+
+**Validaciones:**
+- Dirección no vacía
+- Respuesta válida del servicio (status ok)
+- Coordenadas dentro de área geográfica soportada
+- Solo obligatorio en pedidos con tipo "delivery"
+
+**Excepciones:**
+- Para retiro en tienda no se exige verificación
 
 ---
 
@@ -460,6 +484,7 @@ Dashboard para monitoreo de negocio y generación de reportes.
 | RF3.1 | Carrito de Compras | ✅ Implementado | Persistencia en sesión/BD |
 | RF3.2 | Proceso de Pago | ✅ Implementado | Stripe, tarjeta, efectivo |
 | RF3.3 | Boleta Electrónica | ✅ Implementado | PDF por correo, con QR |
+| RF3.4 | Verificación Dirección Delivery | ✅ Implementado | Geocodificación + mapa + bloqueo hasta verificación |
 | RF4.1 | Notificaciones Stock Bajo | ⚠️ Parcial | Alertas en admin, falta email |
 | RF4.2 | Actualización Automática Inventario | ✅ Implementado | Al confirmar pago |
 | RF5.1 | Estados del Pedido | ✅ Implementado | 5 estados + cancelación |
