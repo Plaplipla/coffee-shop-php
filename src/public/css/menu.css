@@ -400,6 +400,43 @@ body.modal-open {
     align-items: center;
 }
 
+.extra-toggle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.extra-toggle::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.extra-toggle:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.extra-toggle.active {
+    background: #6F4E37;
+    border-color: #6F4E37;
+}
+
+.extra-toggle.active::after {
+    background: #fff;
+}
+
 .extras-title span {
     font-size: 0.85rem;
     color: #999;
@@ -462,14 +499,6 @@ body.modal-open {
     font-weight: 700;
     min-width: 30px;
     text-align: center;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 20px;
-    border-top: 1px solid #333;
 }
 
 .modal-price {

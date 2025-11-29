@@ -1,5 +1,6 @@
 // Funcionalidad del menú y modal de productos
 let currentQuantity = 1;
+// Extras como toggles (0/1) por id
 let extrasQuantities = {
     descafeinado: 0,
     extraShot: 0,
@@ -48,7 +49,7 @@ function openProductModal(element) {
     document.getElementById('modalQuantityInput').value = '1';
     currentQuantity = 1;
     
-    // Resetear extras
+    // Resetear extras (todos desactivados)
     extrasQuantities = {
         descafeinado: 0,
         extraShot: 0,
@@ -142,40 +143,26 @@ function updateModalPrice() {
 function updateExtrasUI() {
     const extrasContainer = document.getElementById('extrasContainer');
     extrasContainer.innerHTML = '';
-    
-    extras.forEach((extra, index) => {
-        const extrasKey = Object.keys(extrasQuantities)[index];
-        const quantity = extrasQuantities[extrasKey];
-        
+    extras.forEach((extra) => {
+        const key = extra.id;
+        const active = !!extrasQuantities[key];
         const extrasHTML = `
             <div class="extra-item">
                 <div>
                     <div class="extra-name">${extra.name}</div>
                     <div class="extra-price">+ $${extra.price.toLocaleString('es-CL')}</div>
                 </div>
-                <div class="quantity-selector" style="margin: 0; border: none; padding: 0;">
-                    <button type="button" class="quantity-btn" onclick="decreaseExtra('${extrasKey}')">−</button>
-                    <span class="quantity-display" id="extra-${extrasKey}">${quantity}</span>
-                    <button type="button" class="quantity-btn" onclick="increaseExtra('${extrasKey}')">+</button>
-                </div>
+                <button type="button" class="extra-toggle ${active ? 'active' : ''}" onclick="toggleExtra('${key}')" aria-pressed="${active}"></button>
             </div>
         `;
         extrasContainer.innerHTML += extrasHTML;
     });
 }
 
-function increaseExtra(extraKey) {
-    extrasQuantities[extraKey]++;
+function toggleExtra(extraKey) {
+    extrasQuantities[extraKey] = extrasQuantities[extraKey] ? 0 : 1;
     updateExtrasUI();
     updateModalPrice();
-}
-
-function decreaseExtra(extraKey) {
-    if (extrasQuantities[extraKey] > 0) {
-        extrasQuantities[extraKey]--;
-        updateExtrasUI();
-        updateModalPrice();
-    }
 }
 
 // Cerrar modal al hacer click fuera

@@ -96,7 +96,20 @@
 
                             <div class="mb-3" id="delivery-address-group">
                                 <label class="form-label">Dirección de entrega *</label>
-                                <textarea name="delivery_address" id="delivery_address" class="form-control" rows="3" required></textarea>
+                                <div class="input-group mb-2">
+                                    <textarea name="delivery_address" id="delivery_address" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="btnVerifyAddress">
+                                        <i class="bi bi-geo-alt"></i> Verificar dirección
+                                    </button>
+                                    <span id="verifyStatus" class="badge bg-secondary">No verificada</span>
+                                </div>
+                                <div id="verifyMessage" class="text-muted small" style="display:none;"></div>
+                                <div id="addressMap" style="height: 180px; border-radius: 8px; overflow: hidden; display:none;" class="mt-2"></div>
+                                <input type="hidden" name="delivery_lat" id="delivery_lat" value="">
+                                <input type="hidden" name="delivery_lng" id="delivery_lng" value="">
+                                <input type="hidden" name="delivery_address_normalized" id="delivery_address_normalized" value="">
                             </div>
 
                             <div class="mb-3" id="pickup-address-info" style="display:none;">
@@ -106,7 +119,7 @@
                                     Calle 123, Ciudad Ejemplo
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-success btn-lg w-100">
+                            <button type="submit" id="submitOrderBtn" class="btn btn-success btn-lg w-100">
                                 <i class="bi bi-check-circle"></i> Confirmar Pedido
                             </button>
                             <input type="hidden" id="discountCodeHidden" name="discount_code" value="">
@@ -189,6 +202,7 @@
                     window.__checkout = window.__checkout || {};
                     window.__checkout.updateTotal = updateTotal;
                     window.__checkout.setDiscountPercentage = function(p) { discountPercentage = p; updateTotal(); };
+                    window.__checkout.updateDeliveryUI = updateDeliveryUI;
 
                     updateDeliveryUI();
                 })();
@@ -457,5 +471,125 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+    (function(){
+        var btn = document.getElementById('btnVerifyAddress');
+        var field = document.getElementById('delivery_address');
+        var statusEl = document.getElementById('verifyStatus');
+        var msgEl = document.getElementById('verifyMessage');
+        var mapEl = document.getElementById('addressMap');
+        var latEl = document.getElementById('delivery_lat');
+        var lngEl = document.getElementById('delivery_lng');
+        var normEl = document.getElementById('delivery_address_normalized');
+        var map = null, marker = null;
+
+        function setStatus(type, text){
+            if (!statusEl) return;
+            var classes = {
+                success: 'badge bg-success',
+                warning: 'badge bg-warning text-dark',
+                error: 'badge bg-danger',
+                idle: 'badge bg-secondary'
+            };
+            statusEl.className = classes[type] || classes.idle;
+            statusEl.textContent = text;
+        }
+
+        function initMap(lat, lng){
+            if (!mapEl) return;
+            mapEl.style.display = '';
+            if (!map) {
+                map = L.map('addressMap');
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(map);
+            }
+            if (marker) { marker.remove(); }
+            marker = L.marker([lat, lng]).addTo(map);
+            map.setView([lat, lng], 16);
+        }
+
+        function verify(){
+            var q = (field && field.value ? field.value.trim() : '');
+            if (!q) {
+                setStatus('warning','Ingrese una dirección');
+                return;
+            }
+            setStatus('warning','Verificando...');
+            msgEl.style.display = 'none';
+            fetch('/address/validate?q=' + encodeURIComponent(q), { credentials: 'same-origin'})
+                .then(function(r){ return r.json(); })
+                .then(function(data){
+                    if (data && data.ok && data.result) {
+                        var r = data.result;
+                        var lat = parseFloat(r.lat), lng = parseFloat(r.lon);
+                        latEl.value = isFinite(lat) ? lat : '';
+                        lngEl.value = isFinite(lng) ? lng : '';
+                        normEl.value = r.display_name || '';
+                        setStatus('success','Verificada');
+                        if (r.display_name) {
+                            msgEl.textContent = 'Dirección estandarizada: ' + r.display_name;
+                            msgEl.style.display = '';
+                        }
+                        if (isFinite(lat) && isFinite(lng)) initMap(lat,lng);
+                        updateSubmitButton();
+                    } else {
+                        setStatus('error','No encontrada');
+                        msgEl.textContent = (data && data.message) ? data.message : 'No se pudo verificar';
+                        msgEl.style.display = '';
+                        latEl.value = '';
+                        lngEl.value = '';
+                        normEl.value = '';
+                        updateSubmitButton();
+                    }
+                }).catch(function(){
+                    setStatus('error','Error');
+                    msgEl.textContent = 'Error de conexión al verificar la dirección';
+                    msgEl.style.display = '';
+                    latEl.value = '';
+                    lngEl.value = '';
+                    normEl.value = '';
+                    updateSubmitButton();
+                });
+        }
+        
+        function updateSubmitButton(){
+            var submitBtn = document.getElementById('submitOrderBtn');
+            var deliveryRadio = document.getElementById('deliveryTypeDelivery');
+            var pickupRadio = document.getElementById('deliveryTypePickup');
+            if (!submitBtn) return;
+            
+            var isDelivery = deliveryRadio && deliveryRadio.checked;
+            var isPickup = pickupRadio && pickupRadio.checked;
+            
+            if (isPickup) {
+                submitBtn.disabled = false;
+                submitBtn.title = '';
+            } else if (isDelivery) {
+                var lat = latEl.value;
+                var lng = lngEl.value;
+                var verified = (lat && lng && lat !== '' && lng !== '');
+                submitBtn.disabled = !verified;
+                if (!verified) {
+                    submitBtn.title = 'Debe verificar la dirección de entrega antes de continuar';
+                } else {
+                    submitBtn.title = '';
+                }
+            }
+        }
+        
+        if (btn) btn.addEventListener('click', verify);
+        
+        var deliveryRadio = document.getElementById('deliveryTypeDelivery');
+        var pickupRadio = document.getElementById('deliveryTypePickup');
+        if (deliveryRadio) deliveryRadio.addEventListener('change', updateSubmitButton);
+        if (pickupRadio) pickupRadio.addEventListener('change', updateSubmitButton);
+        
+        updateSubmitButton();
+    })();
+    </script>
 </body>
 </html>

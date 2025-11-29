@@ -74,7 +74,7 @@
                                     <h5 class="card-title">
                                         <?php echo htmlspecialchars($item['name']); ?>
                                         <?php 
-                                        // Mostrar extras si existen
+                                        // Mostrar extras si existen, con opción de eliminar
                                         $extras = json_decode($item['extras'] ?? '{}', true);
                                         $extrasLabels = [
                                             'descafeinado' => 'Descafeinado',
@@ -82,15 +82,24 @@
                                             'syrupVainilla' => 'Syrup Vainilla',
                                             'syrupChocolate' => 'Syrup Chocolate'
                                         ];
-                                        $selectedExtras = [];
+                                        $hasAnyExtra = false;
                                         foreach ($extras as $key => $quantity) {
                                             if ($quantity > 0 && isset($extrasLabels[$key])) {
-                                                $selectedExtras[] = $extrasLabels[$key] . ' x' . $quantity;
+                                                if (!$hasAnyExtra) {
+                                                    echo '<div class="mt-1">';
+                                                    $hasAnyExtra = true;
+                                                }
+                                                echo '<div class="d-flex align-items-center gap-2 small text-muted">'
+                                                    . '<span>' . htmlspecialchars($extrasLabels[$key]) . ' x' . intval($quantity) . '</span>'
+                                                    . '<form method="POST" action="/cart/remove-extra" class="d-inline">'
+                                                    . '<input type="hidden" name="cart_item_key" value="' . htmlspecialchars($item['cart_item_key']) . '">'
+                                                    . '<input type="hidden" name="extra_id" value="' . htmlspecialchars($key) . '">'
+                                                    . '<button type="submit" class="btn btn-sm btn-outline-danger p-0 px-2" title="Eliminar extra" aria-label="Eliminar extra">&times;</button>'
+                                                    . '</form>'
+                                                    . '</div>';
                                             }
                                         }
-                                        if (!empty($selectedExtras)) {
-                                            echo '<br><small class="text-muted">' . implode(', ', $selectedExtras) . '</small>';
-                                        }
+                                        if ($hasAnyExtra) { echo '</div>'; }
                                         ?>
                                     </h5>
                                 </div>

@@ -5,6 +5,13 @@ require_once __DIR__ . '/../models/Order.php';
 class CartController {
     private $productModel;
     private $orderModel;
+    // Mapa de precios de extras (CLP) usado para recalcular en servidor
+    private $extrasPriceMap = [
+        'descafeinado' => 1000,
+        'extraShot' => 990,
+        'syrupVainilla' => 990,
+        'syrupChocolate' => 990,
+    ];
     
     public function __construct() {
         $this->productModel = new Product();
@@ -39,6 +46,36 @@ class CartController {
             $this->removeFromSessionCart($cartItemKey);
             $_SESSION['success'] = 'Producto eliminado del carrito';
             
+            header('Location: /cart');
+            exit;
+        }
+    }
+
+    /**
+     * Eliminar un extra específico de un item del carrito
+     */
+    public function removeExtra() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $cartItemKey = $_POST['cart_item_key'] ?? '';
+            $extraId = $_POST['extra_id'] ?? '';
+
+            $this->initSessionCart();
+            if ($cartItemKey && $extraId && isset($_SESSION['cart'][$cartItemKey])) {
+                $item = $_SESSION['cart'][$cartItemKey];
+                $extras = json_decode($item['extras'] ?? '{}', true);
+                if (!is_array($extras)) { $extras = []; }
+                // Poner cantidad del extra a 0 (eliminar)
+                if (isset($extras[$extraId])) {
+                    $extras[$extraId] = 0;
+                }
+                // Guardar y recalcular precio unitario
+                $item['extras'] = json_encode($extras);
+                $item['price'] = $this->recalculateItemUnitPrice($item);
+                $_SESSION['cart'][$cartItemKey] = $item;
+                $_SESSION['success'] = 'Extra eliminado y precio actualizado';
+            } else {
+                $_SESSION['error'] = 'No se pudo eliminar el extra';
+            }
             header('Location: /cart');
             exit;
         }
@@ -158,6 +195,9 @@ class CartController {
                 'customer_phone' => $_POST['customer_phone'],
                 'delivery_type' => $deliveryType,
                 'delivery_address' => $deliveryAddress,
+                'delivery_address_normalized' => $_POST['delivery_address_normalized'] ?? null,
+                'delivery_lat' => isset($_POST['delivery_lat']) && $_POST['delivery_lat'] !== '' ? floatval($_POST['delivery_lat']) : null,
+                'delivery_lng' => isset($_POST['delivery_lng']) && $_POST['delivery_lng'] !== '' ? floatval($_POST['delivery_lng']) : null,
                 'delivery_fee' => $deliveryFee,
                 'items' => $cartItems,
                 'subtotal' => $subtotal,
@@ -268,6 +308,8 @@ class CartController {
                 'icon' => $productIcon,
                 'extras' => $extras
             ];
+            // Asegurar price coherente en caso de que extras vengan en JSON
+            $_SESSION['cart'][$cartItemKey]['price'] = $this->recalculateItemUnitPrice($_SESSION['cart'][$cartItemKey]);
         }
     }
     
@@ -303,6 +345,23 @@ class CartController {
         }
         
         return $total;
+    }
+
+    /**
+     * Recalcular precio unitario a partir de base_price y extras
+     */
+    private function recalculateItemUnitPrice($item) {
+        $base = isset($item['base_price']) ? intval($item['base_price']) : intval($item['price']);
+        $extras = json_decode($item['extras'] ?? '{}', true);
+        if (!is_array($extras)) { $extras = []; }
+        $extrasTotal = 0;
+        foreach ($extras as $key => $qty) {
+            $qty = intval($qty);
+            if ($qty > 0 && isset($this->extrasPriceMap[$key])) {
+                $extrasTotal += $this->extrasPriceMap[$key] * $qty;
+            }
+        }
+        return $base + $extrasTotal;
     }
     
     private function getSessionCartItemCount() {
@@ -373,6 +432,9 @@ class CartController {
             'customer_phone' => $_POST['customer_phone'],
             'delivery_type' => $deliveryType,
             'delivery_address' => $deliveryAddress,
+            'delivery_address_normalized' => $_POST['delivery_address_normalized'] ?? null,
+            'delivery_lat' => isset($_POST['delivery_lat']) && $_POST['delivery_lat'] !== '' ? floatval($_POST['delivery_lat']) : null,
+            'delivery_lng' => isset($_POST['delivery_lng']) && $_POST['delivery_lng'] !== '' ? floatval($_POST['delivery_lng']) : null,
             'delivery_fee' => $deliveryFee,
             'items' => $cartItems,
             'subtotal' => $subtotal,

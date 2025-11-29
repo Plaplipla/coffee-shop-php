@@ -32,8 +32,8 @@ $uri = trim($uri, '/');
 // RUTAS PÚBLICAS
 $publicRoutes = [
     '', 'home', 'login', 'auth/login', 'register', 'auth/register', 'auth/verify-email', 'auth/verified', 'auth/resend-verification',
-    'cart', 'cart/add', 'cart/remove', 'cart/update-quantity', 'cart/clear', 'cart/check-email',
-    'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'contact/send', 'about',
+    'cart', 'cart/add', 'cart/remove', 'cart/remove-extra', 'cart/update-quantity', 'cart/clear', 'cart/check-email',
+    'checkout', 'cart/process-order', 'cart/order-confirmation', 'menu', 'contact', 'contact/send', 'about', 'address/validate',
     'payment/create-checkout', 'payment/success', 'payment/cancel', 'payment/webhook',
     'employee/orders', 'delivery/orders', 'admin/dashboard', 'admin/reports', 'admin/export', 'track-order', 'order-history'
 ];
@@ -116,6 +116,11 @@ switch ($uri) {
         $controller = new AuthController();
         $controller->resendVerification();
         break;
+    
+    case 'address/validate':
+        $controller = new AddressController();
+        $controller->validate();
+        break;
         
     // RUTAS DEL CARRITO
     case 'cart':
@@ -131,6 +136,11 @@ switch ($uri) {
     case 'cart/remove':
         $controller = new CartController();
         $controller->remove();
+        break;
+    
+    case 'cart/remove-extra':
+        $controller = new CartController();
+        $controller->removeExtra();
         break;
         
     case 'cart/update-quantity':
