@@ -528,3 +528,8 @@ body.modal-open {
         max-width: 100%;
     }
 }
+
+/* Bootstrap btn-close para offcanvas con fondo oscuro */
+.product-offcanvas .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
