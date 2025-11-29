@@ -57,6 +57,19 @@
         <?php else: ?>
             <div class="row">
                 <div class="col-md-8">
+                    <!-- Encabezado de columnas -->
+                    <div class="card mb-2 bg-light">
+                        <div class="card-body py-2">
+                            <div class="row align-items-center small text-muted fw-bold">
+                                <div class="col-md-2 text-center">Producto</div>
+                                <div class="col-md-4">Nombre</div>
+                                <div class="col-md-2 text-center">Precio c/u</div>
+                                <div class="col-md-2 text-center">Cantidad</div>
+                                <div class="col-md-2 text-center">Subtotal</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <?php foreach ($cartItems as $item): ?>
                     <div class="card mb-3">
                         <div class="card-body">
@@ -103,12 +116,11 @@
                                         ?>
                                     </h5>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 text-center">
                                     <span class="h6">$<?php echo number_format($item['base_price'] ?? $item['price'], 0, ',', '.'); ?></span>
-                                    <small class="text-muted d-block">c/u</small>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="d-flex align-items-center gap-2">
+                                    <div class="d-flex align-items-center gap-2 justify-content-center">
                                         <form method="POST" action="/cart/update-quantity" style="display: flex; align-items: center; gap: 5px;">
                                             <input type="hidden" name="cart_item_key" value="<?php echo htmlspecialchars($item['cart_item_key']); ?>">
                                             <input type="hidden" name="quantity" value="<?php echo $item['quantity'] - 1; ?>">
@@ -122,14 +134,16 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div class="col-md-2 text-end">
-                                    <strong class="h6">$<?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?></strong>
-                                    <form method="POST" action="/cart/remove" class="mt-2">
-                                        <input type="hidden" name="cart_item_key" value="<?php echo htmlspecialchars($item['cart_item_key']); ?>">
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="bi bi-trash"></i> Eliminar
-                                        </button>
-                                    </form>
+                                <div class="col-md-2 text-center">
+                                    <div class="d-flex flex-column align-items-center gap-2">
+                                        <strong class="h6">$<?php echo number_format($item['price'] * $item['quantity'], 0, ',', '.'); ?></strong>
+                                        <form method="POST" action="/cart/remove">
+                                            <input type="hidden" name="cart_item_key" value="<?php echo htmlspecialchars($item['cart_item_key']); ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
